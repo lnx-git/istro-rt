@@ -1,1 +1,1 @@
-tail -f out/istro_rt2016.out | grep process_angle
+tail -f out/istro_rt2016.log | grep process_angle
