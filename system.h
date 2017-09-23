@@ -27,7 +27,7 @@
 
 int msleep(long ms);
 
-int openSerialPort(const char* portName);
+int openSerialPort(const char* portName, int speed);
 void closeSerialPort(int serialPort);
 
 int writeSerialPort(int serialPort, const void *buf, int count);

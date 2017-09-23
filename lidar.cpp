@@ -7,7 +7,7 @@
 #include "logger.h"
 
 const float LIDAR_DISTANCE_MIN       =   1;    // minimum distance that could be measured by lidar (in centimeters) 
-const float LIDAR_DISTANCE_THRESHOLD = 100;    // obstacle avoidance distance (in centimeters)
+const float LIDAR_DISTANCE_THRESHOLD = 150;    // obstacle avoidance distance (in centimeters)
 const int   LIDAR_QUALITY_THRESHOLD  =   1;    // ignore datected obstacle if quality is low (<20)
 
 const float LIDAR_STOP_ANGLE_MIN     =  45;    // minimum angle where distance is checked

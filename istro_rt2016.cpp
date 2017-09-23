@@ -438,15 +438,20 @@ void *ctrlBoard_thread(void *parg)
     while ((!thread_testcancel()) && (conf.useControlBoard || conf.useControlBoard2)) {
         t = timeBegin();
 
-        if ((res = ctrlBoard.getImuData(ctrlb_euler_x, ctrlb_euler_y, ctrlb_euler_z, ctrlb_calib_gyro, ctrlb_calib_accel, ctrlb_calib_mag)) < 0) {
+        if ((res = ctrlBoard.getServoData()) < 0) {
             result = -1;
+            break;
+        }
+
+        if ((res = ctrlBoard.getImuData(ctrlb_euler_x, ctrlb_euler_y, ctrlb_euler_z, ctrlb_calib_gyro, ctrlb_calib_accel, ctrlb_calib_mag)) < 0) {
+            result = -2;
             break;
         }
 
         timeEnd("istro::ctrlBoard_thread.capture", t);
         if (res > 0) {
             if (ctrlBoard_writeData(ctrlb_euler_x, ctrlb_euler_y, ctrlb_euler_z, ctrlb_calib_gyro, ctrlb_calib_accel, ctrlb_calib_mag) < 0) {
-                result = -2;
+                result = -3;
                 break;
             }
             LOGM_DEBUG(loggerIstro, "ctrlBoard_thread", "data updated");

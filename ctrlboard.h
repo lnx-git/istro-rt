@@ -24,10 +24,14 @@ private:
     int readf(int fd, void *buf, int count);
 
 private:
-    int rxlen;
-    unsigned char rxbuff[RXBUFF_LENGTH+1];
+    int rxlen1;
+    int rxlen2;
+    unsigned char rxbuff1[RXBUFF_LENGTH+1];
+    unsigned char rxbuff2[RXBUFF_LENGTH+1];
 
-    int readFrame(int serialPort, unsigned char *buf, int count);
+    int readFrame(int fd, unsigned char *buf, int count, int &rxlen, unsigned char *rxbuff);
+    int readLn(int fd, unsigned char *buf, int count, int &rxlen, unsigned char *rxbuff);
+
     int parseInt(unsigned char *buf, int count, int &idx, int &x);
     int parseDouble(unsigned char *buf, int count, int &idx, double &x);
     int parseFrameBnoEVC(unsigned char *buf, int count, double &euler_x, double &euler_y, double &euler_z, int &calib_gyro, int &calib_accel, int &calib_mag);
@@ -43,6 +47,7 @@ public:
     void setSpeed(int speed);
 
     int getImuData(double &euler_x, double &euler_y, double &euler_z, int &calib_gyro, int &calib_accel, int &calib_mag);
+    int getServoData();
 };
 
 #endif

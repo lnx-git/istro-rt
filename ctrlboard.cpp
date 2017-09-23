@@ -20,12 +20,13 @@ ControlBoard::ControlBoard(void)
 {
     serialPort = -1;
     serialPort2 = -1;
-    rxlen = 0;
+    rxlen1 = 0;
+    rxlen2 = 0;
 } 
 
 int ControlBoard::init(const char *portName, const char *portName2) 
 {
-    serialPort = openSerialPort(portName);
+    serialPort = openSerialPort(portName, 38400);
     
     if (serialPort == -1) {
         LOGM_ERROR(loggerCtrlBoard, "init", "unable to open serial port1 \"" << portName << "\"!");
@@ -40,7 +41,7 @@ int ControlBoard::init(const char *portName, const char *portName2)
         return 0;
     }
 
-    serialPort2 = openSerialPort(portName2);
+    serialPort2 = openSerialPort(portName2, 115200);
     
     if (serialPort2 == -1) {
         LOGM_ERROR(loggerCtrlBoard, "init", "unable to open serial port2 \"" << portName2 << "\"!");
@@ -130,16 +131,14 @@ void ControlBoard::setSteeringAngle(int angle)
 const unsigned char RX_FRAME_BEGIN = '{';
 const unsigned char RX_FRAME_END   = '}';
 
-int ControlBoard::readFrame(int serialPort, unsigned char *buf, int count)
+int ControlBoard::readFrame(int fd, unsigned char *buf, int count, int &rxlen, unsigned char *rxbuff)
 {
     //rxbuff[rxlen] = '\0';
     //printf("rxbuff(%d): \"%s\"\n", rxlen, rxbuff);
-    int ll = readf(serialPort2, (void *)&rxbuff[rxlen], RXBUFF_LENGTH - rxlen);
+    int ll = readf(fd, (void *)&rxbuff[rxlen], RXBUFF_LENGTH - rxlen);
     if (ll < 0) {
         if (errno != EAGAIN) {
-            LOGM_ERROR(loggerCtrlBoard, "readData", "unable to read from serial port (" << ll << ", " << errno << ", " << strerror(errno) << ")!");
-            
-            /* check "sudo stty -a -F /dev/ttyUSB0" */
+            LOGM_ERROR(loggerCtrlBoard, "readFrame", "unable to read from serial port (" << ll << ", " << errno << ", " << strerror(errno) << ")!");
             return -1;
         }
         ll = 0;    // ignore EAGAIN
@@ -171,7 +170,7 @@ int ControlBoard::readFrame(int serialPort, unsigned char *buf, int count)
     }
     // printf("frame_end: %d\n", i);
     if (i >= rxlen) {
-        // frame begin not found 
+        // frame end not found 
         if (rxlen >= RXBUFF_LENGTH) {
             // buffer full, no end found -> discard all characters (message is larger than than our buffer - ignore it)
             // printf("readData: message too long!\n");
@@ -194,6 +193,73 @@ int ControlBoard::readFrame(int serialPort, unsigned char *buf, int count)
     }
     // return frame length (always >= 2)
     return (i + 1);
+}
+
+const unsigned char RX_LINE_CR = '\n';
+const unsigned char RX_LINE_LF = '\r';
+
+int ControlBoard::readLn(int fd, unsigned char *buf, int count, int &rxlen, unsigned char *rxbuff)
+{
+    //rxbuff[rxlen] = '\0';
+    //printf("rxbuff(%d): \"%s\"\n", rxlen, rxbuff);
+    int ll = readf(fd, (void *)&rxbuff[rxlen], RXBUFF_LENGTH - rxlen);
+    if (ll < 0) {
+        if (errno != EAGAIN) {
+            LOGM_ERROR(loggerCtrlBoard, "readLn", "unable to read from serial port (" << ll << ", " << errno << ", " << strerror(errno) << ")!");
+            return -1;
+        }
+        ll = 0;    // ignore EAGAIN
+    }
+    rxlen += ll;
+    //rxbuff[rxlen] = '\0';
+    //printf("rxbuff(%d, %d): \"%s\"\n", rxlen, ll, rxbuff);
+
+    // find start of frame
+    int i = 0;
+    while ((i < rxlen) && ((rxbuff[i] == RX_LINE_CR) || (rxbuff[i] == RX_LINE_LF))) {
+        i++;
+    }
+    // printf("frame_begin: %d\n", i);
+    if (i >= rxlen) {
+        // frame begin not found -> discard all characters
+        // printf("readData: begin not found!\n");
+        rxlen = 0;
+        return 0;
+    }
+    // ignore characters before FRAME_BEGIN
+    memcpy((void *)rxbuff, (void *)&rxbuff[i], rxlen - i);
+    rxlen -= i;
+
+    // find end of frame
+    i = 0;
+    while ((i < rxlen) && (rxbuff[i] != RX_LINE_CR) && (rxbuff[i] != RX_LINE_LF)) {
+        i++;
+    }
+    // printf("frame_end: %d\n", i);
+    if (i >= rxlen) {
+        // frame end not found 
+        if (rxlen >= RXBUFF_LENGTH) {
+            // buffer full, no end found -> discard all characters (message is larger than than our buffer - ignore it)
+            // printf("readData: message too long!\n");
+            rxlen = 0;            
+            return 0;
+        }
+        // partial frame read -> wait
+        // printf("readData: partial frame read...\n");
+        return 0;
+    }
+
+    // return all characters except CR/LF
+    memcpy((void *)buf, (void *)&rxbuff[0], i);
+    // remove frame characters from the buffer
+    if (i + 1 < rxlen) {
+        memcpy((void *)rxbuff, (void *)&rxbuff[i + 1], rxlen - i - 1);
+        rxlen -= i + 1;
+    } else {
+        rxlen = 0;
+    }
+    // return line length
+    return i;
 }
 
 const char RX_FRAME_HEADER[]   = "{\"BNOEVC\":[";
@@ -293,7 +359,7 @@ int ControlBoard::getImuData(double &euler_x, double &euler_y, double &euler_z, 
     euler_x = euler_y = euler_z = ANGLE_NONE; 
     calib_gyro = calib_accel = calib_mag = -1;
 
-    int ll = readFrame(serialPort, buf, RXBUFF_LENGTH);
+    int ll = readFrame(serialPort2, buf, RXBUFF_LENGTH, rxlen2, rxbuff2);
     if (ll < 0) {
         LOGM_ERROR(loggerCtrlBoard, "getImuData", "readFrame failed!");
         return -1;
@@ -314,6 +380,26 @@ int ControlBoard::getImuData(double &euler_x, double &euler_y, double &euler_z, 
         LOGM_ERROR(loggerCtrlBoard, "getImuData", "parseFrame failed!");
         return 0;
     }
+
+    return 1;
+}
+
+int ControlBoard::getServoData()
+{
+    unsigned char buf[RXBUFF_LENGTH+1];
+
+    int ll = readLn(serialPort, buf, RXBUFF_LENGTH, rxlen1, rxbuff1);
+    if (ll < 0) {
+        LOGM_ERROR(loggerCtrlBoard, "getServoData", "readLn failed!");
+        return -1;
+    }
+    if (ll == 0) {
+        LOGM_TRACE(loggerCtrlBoard, "getServoData", "no frame!");
+        return 0;
+    }
+
+    buf[ll] = '\0';
+    LOGM_TRACE(loggerCtrlBoard, "getServoData", "frame=\"" << buf << "\"");
 
     return 1;
 }
