@@ -14,10 +14,10 @@ gpspipe -r -o out/gpspipe.log &
 
 python /home/odroid/projects/istro_rt2017/script/serial_scan.py
 CMD=$CMD`python /home/odroid/projects/istro_rt2017/script/serial_cmd.py`
-CMD=$CMD" -nowait -i DIstrobotics -path *2M6M1M2M3N7"
+CMD=$CMD" -nowait -i DIstrobotics  -path M5N7M3"
 #CMD=$CMD" -nowait -i DHELLO -navy 90"
 #CMD=$CMD" -nowait -ca 0"
 #CMD=$CMD" -nowait -cg 350 -path N2E4E2M5M1"
 echo Executing: $CMD
-$CMD
+gdb -ex=run --args $CMD
 sudo killall gpspipe
