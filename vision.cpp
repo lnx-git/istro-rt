@@ -3,6 +3,8 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include "vision.h"
+#include "dmap.h"
+#include "mtime.h"
 #include "system.h"
 #include "logger.h"
 
@@ -218,7 +220,7 @@ void VisionCore::calcMarkers(const Mat& image, Mat& markers, const Mat& centers1
     }
     
     int c1[12], c2[12];
-    int dd[12], x2, x3;
+    int dd[12];
     
     for (int i = 0; i < CLUSTER_COUNT; i++) {
         Point3u p1 = centers1.at<Point3f>(i);
@@ -564,21 +566,27 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
     }*/    
 }
 
-void VisionCore::calcELimitAngle(const Mat& elines, const Mat& elweigth, int *dmap)
+void VisionCore::calcELimitAngle(const Mat& elines, const Mat& elweigth, DegreeMap& dmap)
 {    
-    dmap_init(dmap);
+    dmap.init();
     float dd = 1;
     for(int i = 0; i < ELINES_COUNT; i++) {
         float angle1 = elines.at<Vec3f>(i)[ELINES_ANGLE_IDX];
         int val = (elweigth.at<float>(i) + 0.001) >= elines.at<Vec3f>(i)[ELINES_LIMIT_IDX];
+        int dist = -1;
+        int maxd = (int)(elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]);  // max detectable distance (centimetres -> centimetres)
+        if ((elweigth.at<float>(i) + 0.001) <= elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]) {
+            dist = (int)(elweigth.at<float>(i));    // obstacle is detected 
+        }  
+        // assert: if (val == 0) => (dist > 0)
         // for the last one we use old value of dd
         if (i + 1 < ELINES_COUNT) {
             float angle2 = elines.at<Vec3f>(i+1)[ELINES_ANGLE_IDX];
             dd = (angle2 - angle1) / 2;    
         }
-        dmap_fill(dmap, angle1 - dd, angle1 + dd, val);
+        dmap.fill(angle1 - dd, angle1 + dd, val, dist, maxd);
     }
-    dmap_finish(dmap);
+    dmap.finish();
     
 /*    
     const int DMAP_MIN_INTERVAL_LENGTH = 20;
@@ -676,7 +684,7 @@ int VisionCore::generateEPoints(Mat& epoints, Mat& epdist, Mat& elines)
     
     // epdist - v akej vzdialenosti od robota (cm) lezi ktory bod
     for(int j = 0; j < EPOINTS_COUNT; j++) {
-        float y = (j + EPOINTS_OFFSET) * (PERSPECTIVE_Y1 / (EPOINTS_COUNT + EPOINTS_OFFSET));  // kolko pixlov od podnej strany obrazovky chceme dalsiu elipsu            
+        float y = (j + EPOINTS_OFFSET) * (PERSPECTIVE_Y1 / (EPOINTS_COUNT + EPOINTS_OFFSET));  // kolko pixlov od spodnej strany obrazovky chceme dalsiu elipsu            
         float r = (PERSPECTIVE_K1 + PERSPECTIVE_Y0 * PERSPECTIVE_D1 - y * PERSPECTIVE_D1) / (y - PERSPECTIVE_Y0);
         /* float r = j * 25 / 2;   // radius: 0..5 metrov, kazdych 12,5cm   */
         
@@ -717,15 +725,40 @@ int VisionCore::generateEPoints(Mat& epoints, Mat& epdist, Mat& elines)
         } else {
             elines.at<Vec3f>(i)[ELINES_LIMIT_IDX] = maxd_prev;
         }
-//      if (i <= ELINES_COUNT / 2) {
-//          printf("elines[%d]: angle=%d, maxd=%d, limit=%d\n", i, (int)round(elines.at<Vec3f>(i)[ELINES_ANGLE_IDX]),
-//              (int)round(elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]), (int)round(elines.at<Vec3f>(i)[ELINES_LIMIT_IDX]));
-//      }
+/*      if (i <= ELINES_COUNT / 2) {
+            LOGM_DEBUG(loggerVCore, "generateEPoints", "msg=\"elines[]\", i=" << i 
+                << ", angle=" << ioff(elines.at<Vec3f>(i)[ELINES_ANGLE_IDX], 2)
+                << ", maxd="  << ioff(elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX], 2)
+                << ", limit=" << ioff(elines.at<Vec3f>(i)[ELINES_LIMIT_IDX], 2));
+        }  */
     }
     //char key = (char)waitKey(0);    
     
     return 0;
 }
+
+/*
+generateEPoints(): msg="elines[]", i=0, angle=0.00, maxd=37.11, limit=33.77
+generateEPoints(): msg="elines[]", i=1, angle=5.00, maxd=37.11, limit=33.77
+generateEPoints(): msg="elines[]", i=2, angle=10.00, maxd=40.72, limit=37.11
+generateEPoints(): msg="elines[]", i=3, angle=15.00, maxd=44.62, limit=40.72
+generateEPoints(): msg="elines[]", i=4, angle=20.00, maxd=48.86, limit=44.62
+generateEPoints(): msg="elines[]", i=5, angle=25.00, maxd=53.47, limit=48.86
+generateEPoints(): msg="elines[]", i=6, angle=30.00, maxd=58.52, limit=53.47
+generateEPoints(): msg="elines[]", i=7, angle=35.00, maxd=70.17, limit=64.06
+generateEPoints(): msg="elines[]", i=8, angle=40.00, maxd=84.50, limit=76.94
+generateEPoints(): msg="elines[]", i=9, angle=45.00, maxd=102.54, limit=92.97
+generateEPoints(): msg="elines[]", i=10, angle=50.00, maxd=140.52, limit=100.00
+generateEPoints(): msg="elines[]", i=11, angle=55.00, maxd=233.30, limit=100.00
+generateEPoints(): msg="elines[]", i=12, angle=60.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=13, angle=65.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=14, angle=70.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=15, angle=75.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=16, angle=80.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=17, angle=85.00, maxd=392.91, limit=100.00
+generateEPoints(): msg="elines[]", i=18, angle=90.00, maxd=392.91, limit=100.00
+*/
+
 
 /* ---------------------- */
 
@@ -1025,7 +1058,7 @@ int Vision::init(SamplePixels &sampleOnRoad, SamplePixels &sampleOffRoad)
     return 0;    
 }
 
-int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, int *dmap)
+int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, DegreeMap& dmap)
 //int Vision::eval(Mat &image, int& angle_min, int& angle_max) 
 {    
     double t = timeBegin();    

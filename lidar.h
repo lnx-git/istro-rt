@@ -2,6 +2,7 @@
 #define __LIDAR_H__
 
 #include <opencv2/opencv.hpp>
+#include "dmap.h"
 #include "system.h"
 
 using namespace cv;
@@ -56,8 +57,8 @@ public:
     bool checkHealth(void);
 
     int getData(lidar_data_t *data, int& data_cnt);
-    int process(const lidar_data_t *data, const int& data_cnt, int *dmap, int &stop);
-    int drawOutput(const lidar_data_t *data, const int& data_cnt, Mat& img, const int *dmap, int stop, int angle_min, int angle_max, int process_angle, int process_angle_min, int process_angle_max, long image_number);
+    int process(const lidar_data_t *data, const int& data_cnt, DegreeMap& dmap, int &stop);
+    int drawOutput(const lidar_data_t *data, const int& data_cnt, Mat& img, /*const DegreeMap& dmap,*/ int stop, int angle_min, int angle_max, int process_angle, int process_angle_min, int process_angle_max, long image_number);
 };
 
 #endif

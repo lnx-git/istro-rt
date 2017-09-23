@@ -21,6 +21,8 @@ public:
     char* ControlBoard2PortName;
     char* LidarPortName;
     char* AHRSystemPortName;
+
+    char* ControlBoardInitStr;
     
     int startHour;
     int startMinute;
@@ -33,6 +35,9 @@ public:
     // navigation
     int navigationImuYaw;    // navigation towards fixed angle given by IMU (ahrs/ctrlb2) yaw
     char* navigationPath;
+
+    int velocityFwd;
+    int velocityBack;
 
 public:    
     Config();

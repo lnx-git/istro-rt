@@ -2,6 +2,7 @@
 #define __VISION_H__
 
 #include <opencv2/opencv.hpp>
+#include "dmap.h"
 #include "sample.h"
 
 using namespace cv;
@@ -17,11 +18,11 @@ const int ELINES_COUNT = 37;    // kazdych 5 stupnov (36*5) jedna ciara
 const int EPOINTS_OFFSET = 8;   // prvych kolko bodov na ciare bodov preskocime
 const int EPOINTS_COUNT = 40 - EPOINTS_OFFSET;   // kolko bodov je na kazdej ciare
 
-const int ELINES_ANGLE_IDX   = 0;
-const int ELINES_MAXDIST_IDX = 1;
-const int ELINES_LIMIT_IDX   = 2;
+const int ELINES_ANGLE_IDX   = 0;  // angle in degrees
+const int ELINES_MAXDIST_IDX = 1;  // max distance how far obstacles could be seen (in centimetres)
+const int ELINES_LIMIT_IDX   = 2;  // distance behind that obstacles are detected (in centimetres)
 
-const float OBSTACLE_DIST_THRESHOLD = 100;  // vzdialenost za ktorou je koniec cesty povazovany za prekazku
+const float OBSTACLE_DIST_THRESHOLD = 100;  // vzdialenost za ktorou je koniec cesty povazovany za prekazku (alebo kraj obrazovky)
 
 typedef Point3_<uchar> Point3u;
 
@@ -41,7 +42,7 @@ public:
 
 //  int  calcTWeight(Mat& image, const Mat &markers, int x1, int y1, int x2, int y2, int x3, int y3);
     void calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& markersIM, Mat& epweigth, Mat& elweigth);    
-    void calcELimitAngle(const Mat& elines, const Mat& elweigth, int *dmap);
+    void calcELimitAngle(const Mat& elines, const Mat& elweigth, DegreeMap& dmap);
 };
 
 class VisionGui: public VisionCore {
@@ -93,7 +94,7 @@ public:
 public:
     int init(SamplePixels &sampleOnRoad, SamplePixels &sampleOffRoad);
 
-    int eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, int *dmap);
+    int eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, DegreeMap& dmap);
     
     void drawOutput(const Mat &image, Mat &out, const Mat& markers, const Mat& epweigth, const Mat& elweigth, const int& angle_min, const int& angle_max);
 };

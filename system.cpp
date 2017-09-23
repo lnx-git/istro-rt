@@ -136,6 +136,7 @@ int writeSerialPort(int serialPort, const void *buf, int count)
 #else
 
 #include <string.h>
+#include "mtime.h"
 
 int system_sp = 1;
     
@@ -150,7 +151,7 @@ int writeSerialPort(int serialPort, const void *buf, int count)
 {
     char ss[1024];
     int ll = strlen((const char *)buf);
-    if (ll < sizeof(ss)) {
+    if (ll < (int)sizeof(ss)) {
         strcpy(ss, (const char *)buf);
         if ((ll > 0) && (ss[ll - 1] == '\n')) ss[--ll] = 0; 
         if ((ll > 0) && (ss[ll - 1] == '\r')) ss[--ll] = 0; 
@@ -173,44 +174,55 @@ int writeSerialPort(int serialPort, const void *buf, int count)
  90 - aktualne nastavenie motora - 90= stop 
 */
 
-const char data1[] = "R:1:67:289:9:243.83:0:92:90\n\r\nR:1:69:291:9:243.92:0:96:91\r";
-const char data2[] = "{\"BNOEVC\":[10.123,-100.456,+135.789,1,2,3]}\n";
+//const char data1[] = "R:2:67:289:9:243.83:0:92:90\n\r\nR:2:69:291:9:243.92:2:96:91\r";
+//const char data1a[] = "R:2:67:289:9:243.83:2:92:90\n\r";
+//const char data1b[] = "R:2:69:291:9:243.92:2:96:91\r";
+const char data1a[] = "R:2:243.83:2:92:90:0:100:67:289:9:90:130\n\r";
+const char data1b[] = "R:2:243.92:3:96:91:1:120\r";
+const char data2[] = "{\"BNOEVC\":[166.523,-100.456,+135.789,1,2,3]}\n";
 
-int system_readsp1 = 0;
-int system_readsp2 = 0;
+double system_readsp1 = -1;
+int    system_readsp1n = 0;
+double system_readsp2 = -1;
 
 int readSerialPort(int serialPort, void *buf, int count) 
 { 
     if (serialPort == 1) {
-        if (count < strlen(data1)) {
-            LOGM_WARN(loggerSystem, "readSerialPort", "port=" << serialPort << ", res=0");
+        if (count < (int)strlen(data1a)) {
+            LOGM_WARN(loggerSystem, "readSerialPort", "msg=\"buffer too small!\", port=" << serialPort << ", res=0");
             return 0;
         }
     
-        if (!system_readsp1) {
-            system_readsp1 = 1;
-            strcpy((char *)buf, data1);
-            return strlen(data1); 
+        if ((system_readsp1 < 0) || (timeDelta(system_readsp1) >= 100)) {
+            system_readsp1 = timeBegin();
+            if (system_readsp1n) {
+                system_readsp1n = 0;
+                strcpy((char *)buf, data1b);
+                return strlen(data1b); 
+            } else {
+                system_readsp1n = 1;
+                strcpy((char *)buf, data1a);
+                return strlen(data1a); 
+            }
         } else {
-            system_readsp1 = 0;
             return 0;
         }
     }
     if (serialPort == 2) {
-        if (count < strlen(data2)) {
-            LOGM_WARN(loggerSystem, "readSerialPort", "port=" << serialPort << ", res=0");
+        if (count < (int)strlen(data2)) {
+            LOGM_WARN(loggerSystem, "readSerialPort", "msg=\"buffer too small!\", port=" << serialPort << ", res=0");
             return 0;
         }
     
-        if (!system_readsp2) {
-            system_readsp2 = 1;
+        if ((system_readsp2 < 0) || (timeDelta(system_readsp2) >= 20)) {
+            system_readsp2 = timeBegin();
             strcpy((char *)buf, data2);
             return strlen(data2); 
         } else {
-            system_readsp2 = 0;
             return 0;
         }
     }
+    return -1;
 }
 
 #endif

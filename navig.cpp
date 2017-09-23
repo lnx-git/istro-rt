@@ -7,11 +7,13 @@
 LOG_DEFINE(loggerNavig, "navig");
 
 /*
-const int    NAVIGATION_POINT_COUNT = 53;
+const int    NAVIGATION_POINT_COUNT = 53+2;
 
 // Stadthallenpark, Donaupark - Deggendorf, Germany
 nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
 {
+    { "*1", 12.952234, 48.829874 },  // start
+    { "*2", 12.947419, 48.831269 },  // end
     { "S1", 12.953862, 48.831845 },
     { "S2", 12.954119, 48.831137 },  // 12.953937, 48.831319
     { "S3", 12.955238, 48.831391 },  // 12.955182, 48.831469
@@ -69,11 +71,14 @@ nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
 */
 
 /*
-const int    NAVIGATION_POINT_COUNT = 40+1;
+const int    NAVIGATION_POINT_COUNT = 40+3;
 
 // park Ostredky - Bratislava, Slovakia
 nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
 {
+    { "*1", 17.170130, 48.161353 },  // W3, start
+    { "*2", 17.170130, 48.161353 },  // W3, end
+    { "*3", 17.170906, 48.161932 },  // N7, service
     { "W1", 17.169618, 48.161310 },
     { "W2", 17.170065, 48.161682 },
     { "W3", 17.170130, 48.161353 },
@@ -113,16 +118,19 @@ nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
     { "S4", 17.169293, 48.161072 },
     { "S5", 17.170171, 48.161143 },
     { "S6", 17.170874, 48.161198 },
-    { "S7", 17.171887, 48.161260 },
-    { "XX", 17.038773, 48.234771 }    // ba-krce.xml
+    { "S7", 17.171887, 48.161260 }
 };
 */
 
-const int    NAVIGATION_POINT_COUNT = 51;
+/*
+const int    NAVIGATION_POINT_COUNT = 51+3;
 
 // Sad Janka Krala - Bratislava, Slovakia
 nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
 {
+    { "*1", 17.1121848, 48.1353331 },  // E8
+    { "*2", 17.1098255, 48.1352596 },  // M2 Autonomous Area - pickup/load area
+    { "*3", 17.1113667, 48.1339829 },  // E9 Service Area
     { "E1", 17.1147011, 48.1338215 },
     { "E2", 17.1139765, 48.1340145 },
     { "E3", 17.1137189, 48.1335886 },
@@ -175,19 +183,64 @@ nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
     { "N5", 17.1124034, 48.1357465 },
     { "N6", 17.1141433, 48.1353878 }
 };
+*/
 
-int navigation_next_point(const char *path, int &pos, double &point_latitude, double &point_longitude)
+
+const int    NAVIGATION_POINT_COUNT = 26+3;
+
+// Park Ludovita Stura - Zilina, Slovakia
+nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
+{
+    { "*1", 18.7439919, 49.2126778 },  // R3L Autonomous Area - pickup/load area
+    { "*2", 18.7451427, 49.2116839 },  // R3U Autonomous Area - destination/unload area
+    { "*3", 18.7438134, 49.2140281 },  // N5 Service Area
+    { "E1", 18.7440480, 49.2111583 },  // old:  { "E1", 18.743919533, 49.211153081 }, 
+    { "E2", 18.7440394, 49.2106085 },  // old:  { "E2", 18.743920033, 49.210552881 },  
+    { "M1", 18.7442383, 49.2120336 },  // old:  { "M1", 18.744228233, 49.212037381 },  
+    { "M2", 18.7447701, 49.2120673 },  // old:  { "M2", 18.744756633, 49.212074181 },  
+    { "M3", 18.7453250, 49.2121055 },  // old:  { "M3", 18.745312633, 49.212097981 }, 
+    { "M4", 18.7440437, 49.2125931 },  // old:  { "M4", 18.744029433, 49.212597581 },  
+    { "M5", 18.7447746, 49.2128911 },  // 18.7448246, 49.2128911   old:  { "M5", 18.744827533, 49.212881181 },  
+    { "M6", 18.7442554, 49.2115795 },  // old:  { "M6", 18.744255333, 49.211583781 },  
+    { "M7", 18.7448131, 49.2115666 },  // 18.7448131, 49.2115366   old:  { "M7", 18.744806833, 49.211624381 },  
+    { "M8", 18.7452340, 49.2117709 },  // old:  { "M8", 18.745232633, 49.211812881 }, 
+    { "M9", 18.7444566, 49.2114056 },  // 18.7444566, 49.2113756   old:  { "M9", 18.744570733, 49.211398781 },  
+    { "N1", 18.7437801, 49.2130882 },  // old:  { "N1", 18.743673933, 49.213358881 },
+    { "N2", 18.7436367, 49.2137184 },  // old:  { "N2", 18.743636933, 49.213718281 },  
+    { "N3", 18.7440647, 49.2137159 },  // old:  { "N3", 18.744012033, 49.213760381 },  
+                                       // old:  { "N4", 18.743645733, 49.213959981 },
+    { "N5", 18.7438134, 49.2140281 },  // old:  { "N5", 18.743819733, 49.213976281 },  
+    { "N6", 18.7436990, 49.2143872 },   
+    { "N7", 18.7451663, 49.2124690 },  // 18.7452163, 49.2124690 
+    { "S1", 18.7442798, 49.2111676 },  // old:  { "S1", 18.744266633, 49.211172381 },  
+    { "S2", 18.7448376, 49.2112037 },  // old:  { "S2", 18.744837833, 49.211203581 },  
+    { "S3", 18.7443155, 49.2103038 },  // old:  { "S3", 18.744290333, 49.210593581 },  
+    { "S4", 18.7449276, 49.2103336 },  // old:  { "S4", 18.744893133, 49.210655681 },  
+    { "S5", 18.7443392, 49.2096647 },  // old:  { "S5", 18.744340533, 49.209634981 },  
+    { "S6", 18.7449919, 49.2097357 },  // old:  { "S6", 18.744994833, 49.209710081 }   
+    { "S7", 18.7443096, 49.2104290 },
+    { "X1", 18.7445042, 49.2120505 },
+    { "X2", 18.7441871, 49.2122941 }
+};
+
+
+int navigation_next_point(const char *path, int &pos, double &point_latitude, double &point_longitude, int &loadarea)
 {
     int ll = strlen(path);
 
     point_latitude = ANGLE_NONE;
     point_longitude = ANGLE_NONE;
+    loadarea = NAVIGATION_AREA_NONE;
     
     if (pos < ll - 1) {
         for(int idx = 0; idx < NAVIGATION_POINT_COUNT; idx++) {
             if ((navigationPoint[idx].name[0] == path[pos]) && (navigationPoint[idx].name[1] == path[pos+1])) {
+                if ((idx == NAVIGATION_AREA_LOADING) || (idx == NAVIGATION_AREA_UNLOADING)) {
+                    loadarea = idx;
+                }
                 LOGM_INFO(loggerNavig, "navigation_next_point", "found!, name=\"" << navigationPoint[idx].name << "\", pos=" << pos
-                    << ", lat=" << ioff(navigationPoint[idx].latitude, 6) << ", lon=" << ioff(navigationPoint[idx].longitude, 6));                
+                    << ", lat=" << ioff(navigationPoint[idx].latitude, 6) << ", lon=" << ioff(navigationPoint[idx].longitude, 6)
+                    << ", loadarea=" << loadarea);                
                 pos += 2;
                 point_latitude = navigationPoint[idx].latitude;
                 point_longitude = navigationPoint[idx].longitude;
@@ -199,4 +252,9 @@ int navigation_next_point(const char *path, int &pos, double &point_latitude, do
     LOGM_INFO(loggerNavig, "navigation_next_point", "not found!, pos=" << pos);
 
     return -1;
+}
+
+int navigation_approach(const char *path, int pos)
+{
+    return (path[pos] == '*');    // NAVIGATION_AREA_LOADING or NAVIGATION_AREA_UNLOADING
 }

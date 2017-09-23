@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "config.h"
+#include "navig.h"
+#include "ctrlboard.h"
 #include "logger.h"
 
 LOG_DEFINE(loggerConfig, "Config");
@@ -24,21 +26,26 @@ Config::Config(void)
     LidarPortName = NULL;
     AHRSystemPortName = NULL;
 
+    ControlBoardInitStr = NULL;
+
     startHour = -1;
     startMinute = -1;
     waitDelay = 120;  //in seconds
 
-    calibGpsAzimuth = 0;
-    calibImuYaw = 0;
+    calibGpsAzimuth = (int)ANGLE_NONE;
+    calibImuYaw = (int)ANGLE_NONE;
 
     navigationImuYaw = (int)ANGLE_NONE;    // navigation towards fixed angle given by ahrs yaw
+
+    velocityFwd = VEL_OPT - VEL_ZERO;
+    velocityBack = VEL_BACK - VEL_ZERO;
 }
 
 int Config::parseArguments(int argc, char** argv)
 {
     // parse the command line arguments
     if( argc < 2) {
-        printf("USAGE: <program name> -cb <control_board_device> -cb2 <control_board_2nd_device> -nogps -lidar <lidar_device> -ahrs <arhs_device> -nosave -nowait -h <start_hour> -m <start_min> -cg <gps_azimuth> -ca <ahrs_yaw> -navy <ahrs_yaw> -path <PxPyPz>\n");
+        printf("USAGE: <program name> -cb <control_board_device> -cb2 <control_board_2nd_device> -nogps -lidar <lidar_device> -ahrs <arhs_device> -nosave -nowait -h <start_hour> -m <start_min> -cg <gps_azimuth> -ca <ahrs_yaw> -navy <ahrs_yaw> -path <PxPyPz> -i <init_cmd>\n");
         LOGM_ERROR(loggerConfig, "parseArguments", "missing arguments!");
         return -1;
     }
@@ -58,6 +65,12 @@ int Config::parseArguments(int argc, char** argv)
             if ((i + 1) < argc) {
                 useControlBoard2 = 1; 
                 ControlBoard2PortName = argv[++i];
+            }        
+        }
+
+        if (strcmp(argv[i], "-i") == 0) { 
+            if ((i + 1) < argc) {
+                ControlBoardInitStr = argv[++i];
             }        
         }
       
@@ -105,7 +118,7 @@ int Config::parseArguments(int argc, char** argv)
                 }
             }        
         }
-      
+        
         if(strcmp(argv[i], "-ca") == 0) { 
             if ((i + 1) < argc) {
                 if (useGPSDevice && (useAHRSystem || useControlBoard2)) { 
@@ -135,6 +148,48 @@ int Config::parseArguments(int argc, char** argv)
                 }
             }        
         }
+
+        if (strcmp(argv[i], "-vf") == 0) { 
+            if ((i + 1) < argc) {
+                velocityFwd = atoi(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-vb") == 0) { 
+            if ((i + 1) < argc) {
+                velocityBack = atoi(argv[++i]);
+            }
+        }
+
+        if (strcmp(argv[i], "-p1la") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[0].latitude = atof(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-p1lo") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[0].longitude = atof(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-p2la") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[1].latitude = atof(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-p2lo") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[1].longitude = atof(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-p3la") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[2].latitude = atof(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-p3lo") == 0) { 
+            if ((i + 1) < argc) {
+                navigationPoint[2].longitude = atof(argv[++i]);
+            }
+        }        
     }
     
     if ((startHour < 0) || (startMinute < 0)) {
@@ -156,6 +211,9 @@ void Config::printArguments(void)
 {
     if(useControlBoard) {
         LOGM_INFO(loggerConfig, "printArguments", "ControlBoard=\"" <<  ControlBoardPortName << "\"");
+        if(ControlBoardInitStr) {
+            LOGM_INFO(loggerConfig, "printArguments", "CBInitStr=\"" << ControlBoardInitStr << "\"");
+        }
     } else {
         LOGM_INFO(loggerConfig, "printArguments", "ControlBoard=FALSE");
     }
@@ -209,4 +267,14 @@ void Config::printArguments(void)
     }
     LOGM_INFO(loggerConfig, "printArguments", "CalibGpsAzimuth=" << calibGpsAzimuth);
     LOGM_INFO(loggerConfig, "printArguments", "CalibImuYaw=" << calibImuYaw);
+
+    LOGM_INFO(loggerConfig, "printArguments", "VelocityFwd=" << velocityFwd);
+    LOGM_INFO(loggerConfig, "printArguments", "VelocityBack=" << velocityBack);
+
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[0].name=\"" << navigationPoint[0].name << "\""
+        << ", NavP[0].longitude=" << ioff(navigationPoint[0].longitude, 6) << ", NavP[0].latitude=" << ioff(navigationPoint[0].latitude, 6));
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[1].name=\"" << navigationPoint[1].name << "\""
+        << ", NavP[1].longitude=" << ioff(navigationPoint[1].longitude, 6) << ", NavP[1].latitude=" << ioff(navigationPoint[1].latitude, 6));
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[2].name=\"" << navigationPoint[2].name << "\""
+        << ", NavP[2].longitude=" << ioff(navigationPoint[2].longitude, 6) << ", NavP[2].latitude=" << ioff(navigationPoint[2].latitude, 6));
 }

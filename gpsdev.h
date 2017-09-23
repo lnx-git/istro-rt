@@ -11,7 +11,7 @@ public:
     int init(void);
     void close(void);
 
-    int getData(double &latitude, double &longitude, double &course);
+    int getData(double &latitude, double &longitude, double &speed, double &course);
 };
 
 #endif

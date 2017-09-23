@@ -16,6 +16,7 @@ using namespace log4cxx::helpers;
 
 // Load XML configuration file using DOMConfigurator
 #define LOG_CONFIG_LOAD(logger_config) DOMConfigurator::configure(logger_config)
+#define LOG_DESTROY() {}
 
 #define LOG_THREAD_NAME(logger_thread_name) MDC::put("threadName", logger_thread_name)
 
@@ -37,25 +38,31 @@ using namespace log4cxx::helpers;
 
 #include <iostream>
 
+void lmi(void);
+void lmd(void);
+void lml(void);
+void lmu(void);
+
 #define LOG_DEFINE(logger_variable, logger_name) static const char logger_variable[] = logger_name;
 
-#define LOG_CONFIG_LOAD(logger_config) {}
+#define LOG_CONFIG_LOAD(logger_config) { lmi(); }
+#define LOG_DESTROY() { lmd(); }
 
 #define LOG_THREAD_NAME(logger_thread_name) {}
 
-#define LOG_TRACE(logger_variable, logger_msg)  std::cout << "TRACE " << logger_variable << ": " << logger_msg << std::endl
-#define LOG_DEBUG(logger_variable, logger_msg)  std::cout << "DEBUG " << logger_variable << ": " << logger_msg << std::endl
-#define LOG_INFO(logger_variable, logger_msg)   std::cout << "INFO  " << logger_variable << ": " << logger_msg << std::endl
-#define LOG_WARN(logger_variable, logger_msg)   std::cout << "WARN  " << logger_variable << ": " << logger_msg << std::endl
-#define LOG_ERROR(logger_variable, logger_msg)  std::cout << "ERROR " << logger_variable << ": " << logger_msg << std::endl
-#define LOG_FATAL(logger_variable, logger_msg)  std::cout << "FATAL " << logger_variable << ": " << logger_msg << std::endl
+#define LOG_TRACE(logger_variable, logger_msg)  { lml(); std::cout << "TRACE " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
+#define LOG_DEBUG(logger_variable, logger_msg)  { lml(); std::cout << "DEBUG " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
+#define LOG_INFO(logger_variable, logger_msg)   { lml(); std::cout << "INFO  " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
+#define LOG_WARN(logger_variable, logger_msg)   { lml(); std::cout << "WARN  " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
+#define LOG_ERROR(logger_variable, logger_msg)  { lml(); std::cout << "ERROR " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
+#define LOG_FATAL(logger_variable, logger_msg)  { lml(); std::cout << "FATAL " << logger_variable << ": " << logger_msg << std::endl; lmu(); }
 
-#define LOGM_TRACE(logger_variable, logger_method, logger_msg)  std::cout << "TRACE " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
-#define LOGM_DEBUG(logger_variable, logger_method, logger_msg)  std::cout << "DEBUG " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
-#define LOGM_INFO(logger_variable, logger_method, logger_msg)   std::cout << "INFO  " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
-#define LOGM_WARN(logger_variable, logger_method, logger_msg)   std::cout << "WARN  " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
-#define LOGM_ERROR(logger_variable, logger_method, logger_msg)  std::cout << "ERROR " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
-#define LOGM_FATAL(logger_variable, logger_method, logger_msg)  std::cout << "FATAL " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl
+#define LOGM_TRACE(logger_variable, logger_method, logger_msg)  { lml(); std::cout << "TRACE " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
+#define LOGM_DEBUG(logger_variable, logger_method, logger_msg)  { lml(); std::cout << "DEBUG " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
+#define LOGM_INFO(logger_variable, logger_method, logger_msg)   { lml(); std::cout << "INFO  " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
+#define LOGM_WARN(logger_variable, logger_method, logger_msg)   { lml(); std::cout << "WARN  " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
+#define LOGM_ERROR(logger_variable, logger_method, logger_msg)  { lml(); std::cout << "ERROR " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
+#define LOGM_FATAL(logger_variable, logger_method, logger_msg)  { lml(); std::cout << "FATAL " << logger_variable << "::" << logger_method << "(): " << logger_msg << std::endl; lmu(); }
 
 #endif
 

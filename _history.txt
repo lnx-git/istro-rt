@@ -1,0 +1,103 @@
+15.9.2017
+- implementovane nove ControlBoard stavy OBSTF/B/A
+- upravene navigacne body na zaklade aktualizacie OSM map od JECC
+
+12.9.2017
+- process_thread: shrinkovanie lidar dmapy - objekty budu do mapy kreslit blizsie, aby skor obchadzal prekazky
+- ctrlboard: implementacia prikazov na zmeny stavov LED (maska, index)
+- loop: vypis process_state na displej, indikacia dalsich stavov NAV_ANGLE a MIN_MAX ledkami
+- loop: zmena stavov LED aj v manualnom rezime
+- saveImage: logovanie nazvov obrazkov pre potreby log parsera
+
+8.9.2017
+- wmodel: kontrola indexov pri pristupe do gridu (prevencia chyb segmentation fault)
+- wmodel: posun wmgridu pri pohybe robota
+- process_thread: implementacia vypocitavania zmeny internej polohy (x,y) podla odometrie - update_xy()
+
+7.9.2017
+- save_thread: implementovane obmedzenie max poctu obrazkov ukladanych za sekundu na disk (max. 3)
+- process_thread: opravene vypisovanie process_angle v lidar obrazkoch + zrusene docasne trace logovanie
+- sample: doplnene zalogovanie chyby, ak neexistuje obrazok v "sample" adresari 
+
+2.9.2017
+- prekompilovane s prepinacom -Wall a opravene vsetky warningy - sposobovalo problemy na Odroide
+
+1.9.2017
+- process_thread: doplneny process_state a signalizacia pomocou roznych stavov LED 
+- process_thread: cakania na nalozenie a vylozenie v un/load area
+- wmodel: implementovane hladadnie prekazok v gride evalGrid()
+
+31.8.2017
+- vision_thread: vytvoreny novy thread na spracovanie obrazkov z kamery
+- process_thread: vypocet smeru/rychlosti prerobeny, aby bol nezavisly od spracovania dat z kamery a lidaru (cez wmgrid)
+
+29.8.2017
+- gps_thread: implementovane priblizovanie sa co najpresnejsie k un/loading zone
+!!otestovat
+- config: doplnena konfiguracia polohy prvych troch waypointov a rychlosti dopredu/dozadu
+- navig: vytvorenie navigacnych bodov pre Park Ludovita Stura v Ziline
+- loop: klavesa 'g' vypise aktualnu GPS polohu na stdout a zaloguje (ppoint), pre korekcie mapy, hladanie v logoch
+
+27.8.2017
+- process_thread: hodnoty PROCESS_DIR_MIN/MAX zmensene na +-15 stupnov, casto vychadzal na travu
+- loop: oprava nastavenia rychlosti pri klavesach '0'..'9'
+- dataset: opravena inicialna hodnota process_angle - robot hned po spusteni zatacal doprava
+
+24.8.2017
+- wmodel: aktualizacia interneho gridu s prekazkami podla lidaru a kamery, zatial napevno okolo prvej GPS polohy
+- save_thread: ukladanie PNG obrazkov wmgridu na disk
+
+21.8.2017
+- process_thread: pri obchadzani prekazky (MIN_MAX) uvazuje aj smer k cielu (process_dir)
+- calib_process: nav_angle_ok - kalibracia sa nespusti, ak smerujeme mimo cielu
+- gps_thread: opravene otocenie lokalnych suradnic gps_x/y
+
+19.8.2017
+- process_thread: opravene prerusovanie wrongway - cuvanie nemoze byt prerusene obchadzanim, ak kamera zbada prekazku
+- ctrlboard: zmeny z testovania v SadeJK - min/max konstanty
+
+17.8.2017
+- wrongway_process: prva verzia cuvnutie, ak sa dlho nevieme nasmerovat na smer k cielu
+- calib_process: implementacia kontroly navp_ok, kalibracia sa nikdy neuskutocni na zaciatku a ani pri konci useku
+- ctrlboard: implementacia noveho protokolu CB v2 (ledky, detekcia sudka, 2 nove ultrazvuky vzadu, beeper)
+- geocalc: implementacia getDist() bez GeographicLib - orientacny vypocet vzdialenosti iba pre ucely ladenia
+
+13.8.2017
+- process_thread: zvyseny min/max uhol (+-45), ktory sa pouziva pri zatacani na navigacny bod (AZIMUTH_YAW)
+- process_thread - kalibracia: opravene vypocitavanie rozptylu min/max uhlov pri prechode cez 0 a 360 (kalibracia)
+- process_thread - kalibracia: obmedzenie na max rozptyl min/max pre gps_course a yaw pocas kalibracie 
+- gps_thread: opravena chyba (prevod stupne na radiany) pri vypocte gps_x/y
+
+10.8.2017
+- zmeny z testovania v SadeJK
+- ctrlboard: upravene min/max konstanty pre serva "steering angle" a "velocity"
+- loop: ovladanie rychlosti robota klavesami "W" a "S"
+
+8.8.2017
+- mtime.cpp: novy subor - boli sem presunute funkcie narabajuce s casom zo sample.cpp
+- ctrlboard: implementacia ircth - vypocet klzavej priemernej rychlosti podla poctu impulzov IRC za poslednu sekundu
+- process_thread: implementacie kalibracie "gps_course vs yaw"
+- ctrlboard: zmenene min/max konstanty pre ovladanie serv "steering angle" a "velocity" - zmena hardveru
+
+5.8.2017
+- loop: obsluha waitKey prehodena do samostatnej funkcie
+- logger: implementacia mutexov a logovania casu aj pre win32
+
+20.7.2017, istro_rt2017_170720:
+- premenovanie suborov na "rt2017"
+- loop: vykonavanie autonomneho programu "snake" - pre ucely kalibracie
+- loop: vypisovanie smeru z GPSka na LCD displej
+
+11.5.2017, istro_rr2017_170511:
+- lidar: pokus o filtrovanie hodnot z lidaru, aby ignoroval slnecne odlesky 
+- lidar: do vystupnych obrazkov doplnena vizualizacia quality dat z lidaru
+- lidar: generuju sa .png subory na disk namiesto .jpg
+- ctrlboard: implementovane parsovanie servodata (udajov o stave a nastaveniach serv z Arduina)
+- loop: aktualna rychlost sa neposiela, ak stav Arduina je STOP
+
+3.5.2017, istro_rr2017_170503:
+- ctrlboard: zmeneny baudrate pre ControlBoard na 115200
+- ctrlboard: implementovane posielanie inicializacneho prikazu pre ControlBoard ("-i")
+- loop: pravidelne posielanie aktualnej rychlosti
+- loop: vypisovanie na LCD displej cez ControlBoard
+- thread_save: logovanie parametrov, s ktorymi su ukladane obrazky

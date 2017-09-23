@@ -13,12 +13,13 @@ int thread_testcancel(void)
     return thread_cancel;
 }
 
-int thread_exit(void) 
+void thread_exit(void) 
 {
     pthread_exit(NULL);
 }
 
-int Threads::init(void *data1, void *data2, void *data3, void *data4, void *data5, void *data6, void *data7, void *data8, void *data9, void *data10, void *data11)
+int Threads::init(void *data1, void *data2, void *data3, void *data4, void *data5, void *data6, void *data7, 
+        void *data8, void *data9, void *data10, void *data11, void *data12, void *data13)
 {
     thdata_len = 0;
     
@@ -55,7 +56,13 @@ int Threads::init(void *data1, void *data2, void *data3, void *data4, void *data
     thdata[thdata_len].state = THDATA_STATE_NEW;
     thdata[thdata_len++].data = data11;
     
-    printState();
+    thdata[thdata_len].state = THDATA_STATE_NEW;
+    thdata[thdata_len++].data = data12;
+
+    thdata[thdata_len].state = THDATA_STATE_NEW;
+    thdata[thdata_len++].data = data13;
+
+    printState(THDATA_STATE_NEW);
     
     if (pthread_mutex_init(&thdata_mtx, NULL) != 0) {
         LOGM_ERROR(loggerThreads, "init", "error creating thdata mutex!");
@@ -82,7 +89,7 @@ void Threads::dataUnlock(void)
     pthread_mutex_unlock(&thdata_mtx);
 }
 
-int Threads::start(void *(*t1)(void *), void *(*t2)(void *), void *(*t3)(void *), void *(*t4)(void *), void *(*t5)(void *), void *(*t6)(void *), void *(*t7)(void *)) 
+int Threads::start(void *(*t1)(void *), void *(*t2)(void *), void *(*t3)(void *), void *(*t4)(void *), void *(*t5)(void *), void *(*t6)(void *), void *(*t7)(void *), void *(*t8)(void *)) 
 {
     int res;
     pthread_attr_t attr;
@@ -141,6 +148,13 @@ int Threads::start(void *(*t1)(void *), void *(*t2)(void *), void *(*t3)(void *)
         return -6;
     }
     
+    res = pthread_create(&threads[7], &attr, t8, (void *)NULL);
+    if (res < 0) {
+        LOGM_ERROR(loggerThreads, "start", "error creating thread[7]!");
+        pthread_attr_destroy(&attr);
+        return -7;
+    }
+
     pthread_attr_destroy(&attr);
 
     return 0;
@@ -178,7 +192,7 @@ void *Threads::getData(/*int type,*/ int state, int state_new)
         // set new state
         if (idx >= 0) {
             thdata[idx].state = state_new;
-            printState();
+            printState(state_new);
         }
         
         dataUnlock();
@@ -197,7 +211,38 @@ void *Threads::getData(/*int type,*/ int state, int state_new)
     return thdata[idx].data;
 }
 
-void *Threads::getData2(/*int type,*/ int state, int state_new, void **ppdata2, int state2)
+void *Threads::checkData(/*int type,*/ int state, int state_new)
+{
+    int idx = -1;
+
+    dataLock();
+
+    // find data
+    for(int i = 0; i < thdata_len; i++) {
+        if (thdata[i].state == state) {
+            idx = i;
+            break;
+        }
+    }
+    // set new state
+    if (idx >= 0) {
+        thdata[idx].state = state_new;
+        printState(state_new);
+    }
+    
+    dataUnlock();
+
+    if (idx < 0) {
+        // dont wait - exit immediatelly and return NULL
+        return NULL;
+    }
+    
+    return thdata[idx].data;
+}
+
+
+/*
+void *Threads::getData2(int state, int state_new, void **ppdata2, int state2)    // int type,
 {
     int idx1 = -1;
     int idx2 = -1;
@@ -219,7 +264,7 @@ void *Threads::getData2(/*int type,*/ int state, int state_new, void **ppdata2, 
         if ((idx1 >= 0) && ((idx2 >= 0))) {
             thdata[idx1].state = state_new;
             thdata[idx2].state = state_new;
-            printState();
+            printState(state_new);
         }
         
         dataUnlock();
@@ -238,10 +283,19 @@ void *Threads::getData2(/*int type,*/ int state, int state_new, void **ppdata2, 
     *ppdata2 = thdata[idx2].data;
     return thdata[idx1].data;
 }
+*/
 
-int  Threads::printState()
+void Threads::printState(int state_new)
 {
     char str[THDATA_NUM + 1];
+
+    if ((state_new == THDATA_STATE_CTRLBOARD) ||
+        (state_new == THDATA_STATE_CTRLBOARD_LOCK) ||
+        (state_new == THDATA_STATE_SHARED) ||
+        (state_new == THDATA_STATE_SHARED_LOCK)) {
+        return;
+    }
+
 
     for(int i = 0; i < thdata_len; i++) {
         if (thdata[i].state <= 9) {
@@ -282,7 +336,7 @@ int  Threads::setData(void *data, int state_new, int max_cnt)
             }
         }
         thdata[idx].state = state_new;
-        printState();
+        printState(state_new);
     }
     
     dataUnlock();

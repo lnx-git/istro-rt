@@ -35,8 +35,8 @@ void Camera::close(void)
 int Camera::getFrame(Mat& frame)
 {
     cap0 >> frame;
-	if( frame.empty() )
-	    return -1;
+    if( frame.empty() )
+        return -1;
   
     return 0;
 } 
@@ -49,7 +49,8 @@ int Camera::init(void) {
     LOGM_WARN(loggerCamera, "init", "MOCK CAMERA implementation, DEBUG ONLY!!");
 
     //camera_img0 = imread("sample/0001032_cesta_oblacno.jpg", 1);
-    camera_img0 = imread("sample/0001060_ok.jpg", 1);  // no obstacles
+    //camera_img0 = imread("sample/0001060_ok.jpg", 1);  // no obstacles
+    camera_img0 = imread("sample/0001126_cesta_vpravo.jpg", 1);  // obstacle on the left side
     if (!camera_img0.data) {
         LOGM_ERROR(loggerCamera, "init", "error opening file!");
         return -1;
