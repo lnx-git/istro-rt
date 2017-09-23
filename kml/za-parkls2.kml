@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://earth.google.com/kml/2.0">
+<Folder><name>Park Ludovita Stura - Zilina, Slovakia</name>
+<Style id="style1"><IconStyle><scale>0.8</scale><color>ff00ff00</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle></Style>
+<Style id="style2"><IconStyle><scale>0.8</scale><color>ff00ff00</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/star.png</href></Icon></IconStyle></Style>
+<Style id="style3"><IconStyle><scale>0.6</scale><color>ff808080</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/forbidden.png</href></Icon></IconStyle></Style>
+<Style id="style4"><IconStyle><scale>0.6</scale><color>ffffffff</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle></Style>
+<Folder>
+<name>navigationPoint</name>
+<Placemark><description></description><name>E1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7440480, 49.2111583</coordinates></Point></Placemark>
+<Placemark><description></description><name>E2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7440394, 49.2106085</coordinates></Point></Placemark>
+<Placemark><description></description><name>M1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7442383, 49.2120336</coordinates></Point></Placemark>
+<Placemark><description></description><name>M2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7447701, 49.2120673</coordinates></Point></Placemark>
+<Placemark><description></description><name>M3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7453250, 49.2121055</coordinates></Point></Placemark>
+<Placemark><description></description><name>M4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7440437, 49.2125931</coordinates></Point></Placemark>
+<Placemark><description></description><name>M5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7447746, 49.2128911</coordinates></Point></Placemark>
+<Placemark><description></description><name>M6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7442554, 49.2115795</coordinates></Point></Placemark>
+<Placemark><description></description><name>M7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7448131, 49.2115666</coordinates></Point></Placemark>
+<Placemark><description></description><name>M8</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7452340, 49.2117709</coordinates></Point></Placemark>
+<Placemark><description></description><name>M9</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7444566, 49.2114056</coordinates></Point></Placemark>
+<Placemark><description></description><name>N1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7437801, 49.2130882</coordinates></Point></Placemark>
+<Placemark><description></description><name>N2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7436367, 49.2137184</coordinates></Point></Placemark>
+<Placemark><description></description><name>N3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7440647, 49.2137159</coordinates></Point></Placemark>
+<Placemark><description></description><name>N5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7438134, 49.2140281</coordinates></Point></Placemark>
+<Placemark><description></description><name>N6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7436990, 49.2143872</coordinates></Point></Placemark>
+<Placemark><description></description><name>N7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7451663, 49.2124690</coordinates></Point></Placemark>
+<Placemark><description></description><name>S1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7442798, 49.2111676</coordinates></Point></Placemark>
+<Placemark><description></description><name>S2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7448376, 49.2112037</coordinates></Point></Placemark>
+<Placemark><description></description><name>S3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7443155, 49.2103038</coordinates></Point></Placemark>
+<Placemark><description></description><name>S4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7449276, 49.2103336</coordinates></Point></Placemark>
+<Placemark><description></description><name>S5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7443392, 49.2096647</coordinates></Point></Placemark>
+<Placemark><description></description><name>S6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7449919, 49.2097357</coordinates></Point></Placemark>
+<Placemark><description></description><name>S7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7443096, 49.2104290</coordinates></Point></Placemark>
+<Placemark><description></description><name>X1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7445042, 49.2120505</coordinates></Point></Placemark>
+<Placemark><description></description><name>X2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>18.7441871, 49.2122941</coordinates></Point></Placemark>
+</Folder>                                   
+</Folder></kml>

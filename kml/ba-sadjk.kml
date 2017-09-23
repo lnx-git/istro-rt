@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://earth.google.com/kml/2.0">
+<Folder><name>Sad Janka Krala - Bratislava, Slovakia</name>
+<Style id="style1"><IconStyle><scale>0.8</scale><color>ff00ff00</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle></Style>
+<Style id="style2"><IconStyle><scale>0.8</scale><color>ff00ff00</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/star.png</href></Icon></IconStyle></Style>
+<Style id="style3"><IconStyle><scale>0.6</scale><color>ff808080</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/forbidden.png</href></Icon></IconStyle></Style>
+<Style id="style4"><IconStyle><scale>0.6</scale><color>ffffffff</color><Icon><href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href></Icon></IconStyle></Style>
+<Folder>
+<name>navigationPoint</name>
+<Placemark><description></description><name>E1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1147011, 48.1338215</coordinates></Point></Placemark>
+<Placemark><description></description><name>E2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1139765, 48.1340145</coordinates></Point></Placemark>
+<Placemark><description></description><name>E3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1137189, 48.1335886</coordinates></Point></Placemark>
+<Placemark><description></description><name>E4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1135803, 48.1348773</coordinates></Point></Placemark>
+<Placemark><description></description><name>E5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1139061, 48.1352246</coordinates></Point></Placemark>
+<Placemark><description></description><name>E6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1124889, 48.1352738</coordinates></Point></Placemark>
+<Placemark><description></description><name>E7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1114482, 48.1354283</coordinates></Point></Placemark>
+<Placemark><description></description><name>E8</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1121848, 48.1353331</coordinates></Point></Placemark>
+<Placemark><description></description><name>E9</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1113667, 48.1339829</coordinates></Point></Placemark>
+<Placemark><description></description><name>F1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1116575, 48.1345598</coordinates></Point></Placemark>
+<Placemark><description></description><name>F2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1123118, 48.1355725</coordinates></Point></Placemark>
+<Placemark><description></description><name>F3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.110924,  48.1331321</coordinates></Point></Placemark>
+<Placemark><description></description><name>F4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1112223, 48.1337423</coordinates></Point></Placemark>
+<Placemark><description></description><name>F5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1097402, 48.1335566</coordinates></Point></Placemark>
+<Placemark><description></description><name>F6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1116929, 48.1356267</coordinates></Point></Placemark>
+<Placemark><description></description><name>F7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1130774, 48.1333077</coordinates></Point></Placemark>
+<Placemark><description></description><name>F8</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1123266, 48.1334841</coordinates></Point></Placemark>
+<Placemark><description></description><name>F9</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1120877, 48.1337492</coordinates></Point></Placemark>
+<Placemark><description></description><name>M1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1101492, 48.1358377</coordinates></Point></Placemark>
+<Placemark><description></description><name>M2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1098255, 48.1352596</coordinates></Point></Placemark>
+<Placemark><description></description><name>M3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1090367, 48.1339602</coordinates></Point></Placemark>
+<Placemark><description></description><name>M4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.107436,  48.1341897</coordinates></Point></Placemark>
+<Placemark><description></description><name>M5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1079456, 48.1357893</coordinates></Point></Placemark>
+<Placemark><description></description><name>M6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1087507, 48.1361597</coordinates></Point></Placemark>
+<Placemark><description></description><name>M7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1094987, 48.1356392</coordinates></Point></Placemark>
+<Placemark><description></description><name>M8</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.108324,  48.1363847</coordinates></Point></Placemark>
+<Placemark><description></description><name>M9</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1109278, 48.1341742</coordinates></Point></Placemark>
+<Placemark><description></description><name>W1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1053383, 48.1352741</coordinates></Point></Placemark>
+<Placemark><description></description><name>W2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1059684, 48.1349237</coordinates></Point></Placemark>
+<Placemark><description></description><name>W3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1063525, 48.1354418</coordinates></Point></Placemark>
+<Placemark><description></description><name>W4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1070074, 48.1352393</coordinates></Point></Placemark>
+<Placemark><description></description><name>W5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1077355, 48.1349157</coordinates></Point></Placemark>
+<Placemark><description></description><name>W6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1048715, 48.1357237</coordinates></Point></Placemark>
+<Placemark><description></description><name>W7</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1070925, 48.1360207</coordinates></Point></Placemark>
+<Placemark><description></description><name>W8</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1074292, 48.1359366</coordinates></Point></Placemark>
+<Placemark><description></description><name>W9</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1067614, 48.1361132</coordinates></Point></Placemark>
+<Placemark><description></description><name>V1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1058988, 48.1363564</coordinates></Point></Placemark>
+<Placemark><description></description><name>V2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1052241, 48.1362207</coordinates></Point></Placemark>
+<Placemark><description></description><name>V3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1048977, 48.136231 </coordinates></Point></Placemark>
+<Placemark><description></description><name>V4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1053319, 48.1357025</coordinates></Point></Placemark>
+<Placemark><description></description><name>S1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1071721, 48.1339794</coordinates></Point></Placemark>
+<Placemark><description></description><name>S2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1058856, 48.1345505</coordinates></Point></Placemark>
+<Placemark><description></description><name>S3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.108742,  48.1335497</coordinates></Point></Placemark>
+<Placemark><description></description><name>S4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1092313, 48.1333701</coordinates></Point></Placemark>
+<Placemark><description></description><name>S5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1129594, 48.1328484</coordinates></Point></Placemark>
+<Placemark><description></description><name>N1</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1071594, 48.1364373</coordinates></Point></Placemark>
+<Placemark><description></description><name>N2</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1086389, 48.1365404</coordinates></Point></Placemark>
+<Placemark><description></description><name>N3</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1102547, 48.1362017</coordinates></Point></Placemark>
+<Placemark><description></description><name>N4</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1096112, 48.1363554</coordinates></Point></Placemark>
+<Placemark><description></description><name>N5</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1124034, 48.1357465</coordinates></Point></Placemark>
+<Placemark><description></description><name>N6</name><styleUrl>style4</styleUrl><Point><altitudeMode>clampToGround</altitudeMode><coordinates>17.1141433, 48.1353878</coordinates></Point></Placemark>
+</Folder>
+</Folder></kml>
