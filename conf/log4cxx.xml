@@ -11,7 +11,7 @@
   
   <!-- Output the log message to log file -->
   <appender name="istroFileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="out/istro_rt2016.log" />
+    <param name="file" value="out/istro_rt2017.log" />
     <param name="append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
     <param name="ConversionPattern" value="%d %-5p [%X{threadName}] %c:%m%n" />
