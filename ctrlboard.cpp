@@ -5,10 +5,10 @@
 #include <iostream>
 #include <sstream>
 #include <errno.h>  //fixme
+#include "threads.h"
 #include "ctrlboard.h"
 #include "config.h"
 #include "dataset.h"
-#include "threads.h"
 #include "system.h"
 #include "logger.h"
 
@@ -244,6 +244,10 @@ void ircth_test()
 }
 */
 
+double obstf_to = -1;    // when was the forward obstacle last seen?
+
+const int CTRLB_OBSTF_TIMEOUT = 1000;  // v milisekundach
+
 int ctrlb_obstState(int ctrlb_state, int ctrlb_velocity) 
 /* returns 1 if obstacle is detected in that direction in which the robot is moving */
 {
@@ -252,7 +256,24 @@ int ctrlb_obstState(int ctrlb_state, int ctrlb_velocity)
     } 
 
     if (ctrlb_velocity >= VEL_ZERO) {
-        return (ctrlb_state == CTRLB_STATE_OBSTF) || (ctrlb_state == CTRLB_STATE_OBSTA);
+        int obstf = (ctrlb_state == CTRLB_STATE_OBSTF) || (ctrlb_state == CTRLB_STATE_OBSTA);
+        // keep reporting obstacle forward (=1) for addidional CTRLB_OBSTF_TIMEOUT miliseconds
+        if (obstf) {
+            obstf_to = timeBegin();
+        } else { 
+            if (obstf_to >= 0) {
+                if (timeDelta(obstf_to) < CTRLB_OBSTF_TIMEOUT) {
+                    obstf = 1;
+                    LOGM_TRACE(loggerCtrlBoard, "ctrlb_obstState", "msg=\"obstacle forward (time)!\", obstf=" << obstf 
+                        << ", dt=" << ioff(timeDelta(obstf_to), 2));
+                } else { 
+                    LOGM_TRACE(loggerCtrlBoard, "ctrlb_obstState", "msg=\"obstacle forward (timeout)!\", obstf=" << obstf 
+                        << ", dt=" << ioff(timeDelta(obstf_to), 2));
+                    obstf_to = -1;
+                }
+            }
+        }
+        return obstf;
     } else {
         return (ctrlb_state == CTRLB_STATE_OBSTB) || (ctrlb_state == CTRLB_STATE_OBSTA);
     } 
@@ -450,6 +471,20 @@ void ControlBoard::setLedProgram(int prg)
     ss[0] = 'L';
     ss[1] = 'P';
     ss[2] = (char)('0' + prg);
+    ss[3] = '\n';
+    
+    writef(serialPort, ss, 4);
+    ss[3] = 0;
+    LOGM_INFO(loggerCtrlBoard, "write", "data=\"" << ss << "\"");
+}
+
+void ControlBoard::setBallDrop(int cnt)
+{
+    char ss[6] = "";
+       
+    ss[0] = 'S';
+    ss[1] = '3';
+    ss[2] = (char)('0' + cnt);
     ss[3] = '\n';
     
     writef(serialPort, ss, 4);
@@ -708,7 +743,9 @@ int ControlBoard::getImuData(double &euler_x, double &euler_y, double &euler_z, 
         return -1;
     }
     if (ll == 0) {
+#ifdef CTRLBOARD_LOG_TRACE0
         LOGM_TRACE(loggerCtrlBoard, "getImuData", "no frame!");
+#endif
         return 0;
     }
 
@@ -862,7 +899,9 @@ int ControlBoard::getServoData(int &state, double &heading, int &ircv, double &i
         return -1;
     }
     if (ll == 0) {
+#ifdef CTRLBOARD_LOG_TRACE0
         LOGM_TRACE(loggerCtrlBoard, "getServoData", "msg=\"no frame!\"");
+#endif
         return 0;
     }
 

@@ -177,12 +177,14 @@ int writeSerialPort(int serialPort, const void *buf, int count)
 //const char data1[] = "R:2:67:289:9:243.83:0:92:90\n\r\nR:2:69:291:9:243.92:2:96:91\r";
 //const char data1a[] = "R:2:67:289:9:243.83:2:92:90\n\r";
 //const char data1b[] = "R:2:69:291:9:243.92:2:96:91\r";
-const char data1a[] = "R:2:243.83:2:92:90:0:100:67:289:9:90:130\n\r";
+const char data1a[] = "R:2:243.83:2:92:90:0:100:0:0:0:0:0:0.00\n\r";
 const char data1b[] = "R:2:243.92:3:96:91:1:120\r";
+const char data1c[] = "R:5:243.83:2:92:90:0:100:0:4:0:4:136:0.00\n\r";  // obstacle forward
 const char data2[] = "{\"BNOEVC\":[166.523,-100.456,+135.789,1,2,3]}\n";
 
 double system_readsp1 = -1;
 int    system_readsp1n = 0;
+//int    system_readsp1m = 0;
 double system_readsp2 = -1;
 
 int readSerialPort(int serialPort, void *buf, int count) 
@@ -193,16 +195,22 @@ int readSerialPort(int serialPort, void *buf, int count)
             return 0;
         }
     
-        if ((system_readsp1 < 0) || (timeDelta(system_readsp1) >= 100)) {
+        if ((system_readsp1 < 0) || (timeDelta(system_readsp1) >= 20)) {
             system_readsp1 = timeBegin();
-            if (system_readsp1n) {
-                system_readsp1n = 0;
+            if (system_readsp1n < 4) {
+                system_readsp1n++;
                 strcpy((char *)buf, data1b);
                 return strlen(data1b); 
             } else {
-                system_readsp1n = 1;
+                system_readsp1n = 0;
+                //if (system_readsp1m >= 300) {
+                //    system_readsp1m = 0;
+                //    strcpy((char *)buf, data1c);
+                //    return strlen(data1c); 
+                //} 
+                //system_readsp1m++;
                 strcpy((char *)buf, data1a);
-                return strlen(data1a); 
+                return strlen(data1a);
             }
         } else {
             return 0;
@@ -214,7 +222,7 @@ int readSerialPort(int serialPort, void *buf, int count)
             return 0;
         }
     
-        if ((system_readsp2 < 0) || (timeDelta(system_readsp2) >= 20)) {
+        if ((system_readsp2 < 0) || (timeDelta(system_readsp2) >= 85)) {
             system_readsp2 = timeBegin();
             strcpy((char *)buf, data2);
             return strlen(data2); 

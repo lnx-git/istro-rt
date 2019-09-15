@@ -18,8 +18,9 @@ Config::Config(void)
     useNosave = 0;
     useCamera = 1;
     useNoWait = 0;
-    useStartTime=0;
-    useNavigation=0;
+    useStartTime = 0;
+    useNavigation = 0;
+    useQRScan = 1;
 
     ControlBoardPortName = NULL;
     ControlBoard2PortName = NULL;
@@ -37,8 +38,10 @@ Config::Config(void)
 
     navigationImuYaw = (int)ANGLE_NONE;    // navigation towards fixed angle given by ahrs yaw
 
-    velocityFwd = VEL_OPT - VEL_ZERO;
-    velocityBack = VEL_BACK - VEL_ZERO;
+    velocityFwd     = VEL_OPT - VEL_ZERO;
+    velocityFwd2    = -1;
+    velocityFwd3    = -1;
+    velocityBack    = VEL_BACK - VEL_ZERO;
 }
 
 int Config::parseArguments(int argc, char** argv)
@@ -154,6 +157,16 @@ int Config::parseArguments(int argc, char** argv)
                 velocityFwd = atoi(argv[++i]);
             }
         }
+        if (strcmp(argv[i], "-vf2") == 0) { 
+            if ((i + 1) < argc) {
+                velocityFwd2 = atoi(argv[++i]);
+            }
+        }
+        if (strcmp(argv[i], "-vf3") == 0) { 
+            if ((i + 1) < argc) {
+                velocityFwd3 = atoi(argv[++i]);
+            }
+        }
         if (strcmp(argv[i], "-vb") == 0) { 
             if ((i + 1) < argc) {
                 velocityBack = atoi(argv[++i]);
@@ -202,6 +215,14 @@ int Config::parseArguments(int argc, char** argv)
 
     if (useNavigation) {
         navigationImuYaw = (int)ANGLE_NONE;
+    }
+
+    /* update speeds so that: velocityFwd <= velocityFwd2 <= velocityFwd3 */
+    if (velocityFwd2 < velocityFwd) {
+        velocityFwd2 = velocityFwd;
+    }
+    if (velocityFwd3 < velocityFwd2) {
+        velocityFwd3 = velocityFwd2;
     }
     
     return 0;
@@ -265,16 +286,23 @@ void Config::printArguments(void)
     } else {
         LOGM_INFO(loggerConfig, "printArguments", "NavigationPath=FALSE");
     }
+    if(useQRScan) {
+        LOGM_INFO(loggerConfig, "printArguments", "QRScan=TRUE");
+    } else {
+        LOGM_INFO(loggerConfig, "printArguments", "QRScan=FALSE");
+    }
     LOGM_INFO(loggerConfig, "printArguments", "CalibGpsAzimuth=" << calibGpsAzimuth);
     LOGM_INFO(loggerConfig, "printArguments", "CalibImuYaw=" << calibImuYaw);
 
     LOGM_INFO(loggerConfig, "printArguments", "VelocityFwd=" << velocityFwd);
+    LOGM_INFO(loggerConfig, "printArguments", "VelocityFwd2=" << velocityFwd2);
+    LOGM_INFO(loggerConfig, "printArguments", "VelocityFwd3=" << velocityFwd3);
     LOGM_INFO(loggerConfig, "printArguments", "VelocityBack=" << velocityBack);
 
-    LOGM_INFO(loggerConfig, "printArguments", "NavP[0].name=\"" << navigationPoint[0].name << "\""
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[0].name=\"" << (char *)navigationPoint[0].name << "\""
         << ", NavP[0].longitude=" << ioff(navigationPoint[0].longitude, 6) << ", NavP[0].latitude=" << ioff(navigationPoint[0].latitude, 6));
-    LOGM_INFO(loggerConfig, "printArguments", "NavP[1].name=\"" << navigationPoint[1].name << "\""
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[1].name=\"" << (char *)navigationPoint[1].name << "\""
         << ", NavP[1].longitude=" << ioff(navigationPoint[1].longitude, 6) << ", NavP[1].latitude=" << ioff(navigationPoint[1].latitude, 6));
-    LOGM_INFO(loggerConfig, "printArguments", "NavP[2].name=\"" << navigationPoint[2].name << "\""
+    LOGM_INFO(loggerConfig, "printArguments", "NavP[2].name=\"" << (char *)navigationPoint[2].name << "\""
         << ", NavP[2].longitude=" << ioff(navigationPoint[2].longitude, 6) << ", NavP[2].latitude=" << ioff(navigationPoint[2].latitude, 6));
 }

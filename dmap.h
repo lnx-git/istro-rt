@@ -22,7 +22,10 @@ public:
     void apply(const DegreeMap& d2);  // p = p <and> p2
     void shrink(float mult);
     void find(int minlen, int mid, int &idx1, int &idx2);
+    void findbnd(int &idx1, int &idx2, int &len);
     void print(const std::string& str);
+    void copy(const DegreeMap& d2);  // d2 -> this
+    void remap(int dd_threshold);
 };
 
 #endif

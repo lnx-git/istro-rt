@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include "config.h"    // ANGLE_NONE
@@ -6,255 +7,271 @@
 
 LOG_DEFINE(loggerNavig, "navig");
 
-/*
-const int    NAVIGATION_POINT_COUNT = 53+2;
+GeoCalc *navigation_pGC = NULL;
 
-// Stadthallenpark, Donaupark - Deggendorf, Germany
-nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
+double navig_ref_latitude = ANGLE_NONE;
+double navig_ref_longitude = ANGLE_NONE;
+
+int navigation_init(GeoCalc *pGC)
 {
-    { "*1", 12.952234, 48.829874 },  // start
-    { "*2", 12.947419, 48.831269 },  // end
-    { "S1", 12.953862, 48.831845 },
-    { "S2", 12.954119, 48.831137 },  // 12.953937, 48.831319
-    { "S3", 12.955238, 48.831391 },  // 12.955182, 48.831469
-    { "S4", 12.953513, 48.831021 },
-    { "S5", 12.954579, 48.830662 },
-    { "S6", 12.955850, 48.830800 },
-    { "S7", 12.955427, 48.830341 },
-    { "S8", 12.955757, 48.830244 },
-    { "S9", 12.953706, 48.831526 },   
-    { "D1", 12.947022, 48.830155 },
-    { "D2", 12.948826, 48.829476 },
-    { "D3", 12.949395, 48.829627 },
-    { "D4", 12.950198, 48.829489 },
-    { "D5", 12.950473, 48.828940 },
-    { "D6", 12.951154, 48.829502 },
-    { "D7", 12.952034, 48.829152 },
-    { "D8", 12.951915, 48.828520 },
-    { "E1", 12.952387, 48.829002 },
-    { "E2", 12.952375, 48.828375 },
-    { "E3", 12.954186, 48.828293 },
-    { "E4", 12.953667, 48.828025 },
-    { "E5", 12.954769, 48.827630 },
-    { "E6", 12.954907, 48.827692 },
-    { "E7", 12.955546, 48.827998 },
-    { "E8", 12.954755, 48.828094 },
-    { "T2", 12.947434, 48.831111 },
-    { "T3", 12.948204, 48.830859 },
-    { "T4", 12.949861, 48.830289 },
-    { "T5", 12.952034, 48.829546 },
-    { "T6", 12.952056, 48.829873 },
-    { "T7", 12.951233, 48.830236 },
-    { "T8", 12.950480, 48.830395 },
-    { "T9", 12.949389, 48.830718 },
-    { "U1", 12.948465, 48.831000 },
-    { "U2", 12.947419, 48.831269 },
-    { "U3", 12.952234, 48.829874 },
-    { "U4", 12.952252, 48.829401 }, 
-    { "U5", 12.952398, 48.829346 },
-    { "U6", 12.952705, 48.829677 },
-    { "U7", 12.953120, 48.830094 },
-    { "X1", 12.952982, 48.830332 },
-    { "X2", 12.952754, 48.829835 },
-    { "X3", 12.952593, 48.829354 },
-    { "X4", 12.955396, 48.828405 },
-    { "X5", 12.955496, 48.831775 },
-    { "X6", 12.956611, 48.831461 },
-    { "X7", 12.956999, 48.831245 },
-    { "X8", 12.957402, 48.831143 },
-    { "C1", 12.953991, 48.830386 },
-    { "C2", 12.953790, 48.830156 },
-    { "C3", 12.956299, 48.829545 },
-    { "C4", 12.956114, 48.829319 },
-    { "C5", 12.954895, 48.829917 }  
-};
-*/
+    navigation_pGC = pGC;
 
-/*
-const int    NAVIGATION_POINT_COUNT = 40+3;
+    navig_ref_latitude = ANGLE_NONE;
+    navig_ref_longitude = ANGLE_NONE;
 
-// park Ostredky - Bratislava, Slovakia
-nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
+    int ref = 0;
+    for(int i = 0; i < NAVIGATION_POINT_COUNT; i++) {
+        navigationPointXY[i].x = 0;
+        navigationPointXY[i].y = 0;
+        
+        // find first navigation point not starting with '*' -> this will be our reference point
+        if (!ref && (navigationPoint[i].name[0] != '*')) {
+            ref = navigation_ref_set(navigationPoint[i].latitude, navigationPoint[i].longitude);
+        }
+    }
+    
+    // error: reference point was not initialized
+    if (!ref) {
+        LOGM_ERROR(loggerNavig, "navigation_init", "msg=\"error: reference point not initialized!\"");
+        return -1;
+    }
+    
+    return 0;
+}
+
+int navigation_point_cnt(void)
 {
-    { "*1", 17.170130, 48.161353 },  // W3, start
-    { "*2", 17.170130, 48.161353 },  // W3, end
-    { "*3", 17.170906, 48.161932 },  // N7, service
-    { "W1", 17.169618, 48.161310 },
-    { "W2", 17.170065, 48.161682 },
-    { "W3", 17.170130, 48.161353 },
-    { "W4", 17.170518, 48.161735 },
-    { "W5", 17.170805, 48.161335 },
-    { "W6", 17.171084, 48.161548 },  // mimo krizovatky
-    { "W7", 17.171186, 48.161370 },  // mimo krizovatky
-    { "W8", 17.171371, 48.161596 },
-    { "W9", 17.171711, 48.161613 },
-    { "E1", 17.167659, 48.161307 },
-    { "E2", 17.167464, 48.161237 },
-    { "E3", 17.167484, 48.161490 },  // mimo krizovatky
-    { "E4", 17.167109, 48.161464 },
-    { "E5", 17.166185, 48.160976 },
-    { "E6", 17.166060, 48.161250 },
-    { "E7", 17.165812, 48.161238 },    
-    { "E8", 17.165820, 48.161356 },
-    { "E9", 17.165418, 48.161327 },
-    { "M1", 17.168734, 48.161694 },
-    { "M2", 17.169385, 48.161374 },
-    { "M3", 17.168833, 48.161326 },
-    { "M4", 17.168187, 48.161371 },
-    { "M5", 17.167968, 48.161354 },
-    { "M6", 17.167940, 48.161532 },
-    { "M7", 17.167997, 48.161190 },
-    { "N1", 17.165371, 48.161540 },
-    { "N2", 17.166198, 48.161598 },
-    { "N3", 17.166851, 48.161648 },
-    { "N4", 17.168001, 48.161734 },
-    { "N5", 17.168718, 48.161796 },
-    { "N6", 17.170058, 48.161889 },
-    { "N7", 17.170906, 48.161932 },
-    { "N8", 17.171685, 48.161992 },
-    { "S1", 17.165506, 48.160784 },
-    { "S2", 17.166208, 48.160844 },
-    { "S3", 17.167919, 48.160967 },
-    { "S4", 17.169293, 48.161072 },
-    { "S5", 17.170171, 48.161143 },
-    { "S6", 17.170874, 48.161198 },
-    { "S7", 17.171887, 48.161260 }
-};
-*/
+    return NAVIGATION_POINT_COUNT;
+}
 
-/*
-const int    NAVIGATION_POINT_COUNT = 51+3;
-
-// Sad Janka Krala - Bratislava, Slovakia
-nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
-{
-    { "*1", 17.1121848, 48.1353331 },  // E8
-    { "*2", 17.1098255, 48.1352596 },  // M2 Autonomous Area - pickup/load area
-    { "*3", 17.1113667, 48.1339829 },  // E9 Service Area
-    { "E1", 17.1147011, 48.1338215 },
-    { "E2", 17.1139765, 48.1340145 },
-    { "E3", 17.1137189, 48.1335886 },
-    { "E4", 17.1135803, 48.1348773 },
-    { "E5", 17.1139061, 48.1352246 },
-    { "E6", 17.1124889, 48.1352738 },
-    { "E7", 17.1114482, 48.1354283 },
-    { "E8", 17.1121848, 48.1353331 },
-    { "E9", 17.1113667, 48.1339829 },
-    { "F1", 17.1116575, 48.1345598 },
-    { "F2", 17.1123118, 48.1355725 },
-    { "F3", 17.110924,  48.1331321 },
-    { "F4", 17.1112223, 48.1337423 },
-    { "F5", 17.1097402, 48.1335566 },
-    { "F6", 17.1116929, 48.1356267 },
-    { "F7", 17.1130774, 48.1333077 },
-    { "F8", 17.1123266, 48.1334841 },
-    { "F9", 17.1120877, 48.1337492 },
-    { "M1", 17.1101492, 48.1358377 },
-    { "M2", 17.1098255, 48.1352596 },
-    { "M3", 17.1090367, 48.1339602 },
-    { "M4", 17.107436,  48.1341897 },
-    { "M5", 17.1079456, 48.1357893 },
-    { "M6", 17.1087507, 48.1361597 },
-    { "M7", 17.1094987, 48.1356392 },
-    { "M8", 17.108324,  48.1363847 },
-    { "M9", 17.1109278, 48.1341742 },
-    { "W1", 17.1053383, 48.1352741 },
-    { "W2", 17.1059684, 48.1349237 },
-    { "W3", 17.1063525, 48.1354418 },
-    { "W4", 17.1070074, 48.1352393 },
-    { "W5", 17.1077355, 48.1349157 },
-    { "W6", 17.1048715, 48.1357237 },
-    { "W7", 17.1070925, 48.1360207 },
-    { "W8", 17.1074292, 48.1359366 },
-    { "W9", 17.1067614, 48.1361132 },
-    { "V1", 17.1058988, 48.1363564 },
-    { "V2", 17.1052241, 48.1362207 },
-    { "V3", 17.1048977, 48.136231  },
-    { "V4", 17.1053319, 48.1357025 },
-    { "S1", 17.1071721, 48.1339794 },
-    { "S2", 17.1058856, 48.1345505 },
-    { "S3", 17.108742,  48.1335497 },
-    { "S4", 17.1092313, 48.1333701 }, 
-    { "S5", 17.1129594, 48.1328484 },
-    { "N1", 17.1071594, 48.1364373 },
-    { "N2", 17.1086389, 48.1365404 },
-    { "N3", 17.1102547, 48.1362017 },
-    { "N4", 17.1096112, 48.1363554 },
-    { "N5", 17.1124034, 48.1357465 },
-    { "N6", 17.1141433, 48.1353878 }
-};
-*/
-
-
-const int    NAVIGATION_POINT_COUNT = 26+3;
-
-// Park Ludovita Stura - Zilina, Slovakia
-nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
-{
-    { "*1", 18.7439919, 49.2126778 },  // R3L Autonomous Area - pickup/load area
-    { "*2", 18.7451427, 49.2116839 },  // R3U Autonomous Area - destination/unload area
-    { "*3", 18.7438134, 49.2140281 },  // N5 Service Area
-    { "E1", 18.7440480, 49.2111583 },  // old:  { "E1", 18.743919533, 49.211153081 }, 
-    { "E2", 18.7440394, 49.2106085 },  // old:  { "E2", 18.743920033, 49.210552881 },  
-    { "M1", 18.7442383, 49.2120336 },  // old:  { "M1", 18.744228233, 49.212037381 },  
-    { "M2", 18.7447701, 49.2120673 },  // old:  { "M2", 18.744756633, 49.212074181 },  
-    { "M3", 18.7453250, 49.2121055 },  // old:  { "M3", 18.745312633, 49.212097981 }, 
-    { "M4", 18.7440437, 49.2125931 },  // old:  { "M4", 18.744029433, 49.212597581 },  
-    { "M5", 18.7447746, 49.2128911 },  // 18.7448246, 49.2128911   old:  { "M5", 18.744827533, 49.212881181 },  
-    { "M6", 18.7442554, 49.2115795 },  // old:  { "M6", 18.744255333, 49.211583781 },  
-    { "M7", 18.7448131, 49.2115666 },  // 18.7448131, 49.2115366   old:  { "M7", 18.744806833, 49.211624381 },  
-    { "M8", 18.7452340, 49.2117709 },  // old:  { "M8", 18.745232633, 49.211812881 }, 
-    { "M9", 18.7444566, 49.2114056 },  // 18.7444566, 49.2113756   old:  { "M9", 18.744570733, 49.211398781 },  
-    { "N1", 18.7437801, 49.2130882 },  // old:  { "N1", 18.743673933, 49.213358881 },
-    { "N2", 18.7436367, 49.2137184 },  // old:  { "N2", 18.743636933, 49.213718281 },  
-    { "N3", 18.7440647, 49.2137159 },  // old:  { "N3", 18.744012033, 49.213760381 },  
-                                       // old:  { "N4", 18.743645733, 49.213959981 },
-    { "N5", 18.7438134, 49.2140281 },  // old:  { "N5", 18.743819733, 49.213976281 },  
-    { "N6", 18.7436990, 49.2143872 },   
-    { "N7", 18.7451663, 49.2124690 },  // 18.7452163, 49.2124690 
-    { "S1", 18.7442798, 49.2111676 },  // old:  { "S1", 18.744266633, 49.211172381 },  
-    { "S2", 18.7448376, 49.2112037 },  // old:  { "S2", 18.744837833, 49.211203581 },  
-    { "S3", 18.7443155, 49.2103038 },  // old:  { "S3", 18.744290333, 49.210593581 },  
-    { "S4", 18.7449276, 49.2103336 },  // old:  { "S4", 18.744893133, 49.210655681 },  
-    { "S5", 18.7443392, 49.2096647 },  // old:  { "S5", 18.744340533, 49.209634981 },  
-    { "S6", 18.7449919, 49.2097357 },  // old:  { "S6", 18.744994833, 49.209710081 }   
-    { "S7", 18.7443096, 49.2104290 },
-    { "X1", 18.7445042, 49.2120505 },
-    { "X2", 18.7441871, 49.2122941 }
-};
-
-
-int navigation_next_point(const char *path, int &pos, double &point_latitude, double &point_longitude, int &loadarea)
+int navigation_next_point(const char *path, int &pos, double &point_latitude, double &point_longitude, int &loadarea, int &point_idx)
 {
     int ll = strlen(path);
 
+    point_idx = -1;
     point_latitude = ANGLE_NONE;
     point_longitude = ANGLE_NONE;
     loadarea = NAVIGATION_AREA_NONE;
     
     if (pos < ll - 1) {
         for(int idx = 0; idx < NAVIGATION_POINT_COUNT; idx++) {
-            if ((navigationPoint[idx].name[0] == path[pos]) && (navigationPoint[idx].name[1] == path[pos+1])) {
+            char c0 = toupper(path[pos]);
+            char c1 = toupper(path[pos+1]);
+            // navigacne body v ceste nie su case sensitive
+            if ((navigationPoint[idx].name[0] == c0) && (navigationPoint[idx].name[1] == c1)) {
+#ifdef ISTRO_NAVIG_BALLDROP
+                // v kazdom bode zadanom velkymi pismenami treba vylozit lopticku
+                if ((c0 == path[pos]) && (c1 == path[pos+1])) {
+                    loadarea = NAVIGATION_AREA_BALLDROP;
+                }
+#else
+                // hviezdickami zacinajuce body *1 a *2 urcuju miesta nakladky a vykladky
                 if ((idx == NAVIGATION_AREA_LOADING) || (idx == NAVIGATION_AREA_UNLOADING)) {
                     loadarea = idx;
                 }
-                LOGM_INFO(loggerNavig, "navigation_next_point", "found!, name=\"" << navigationPoint[idx].name << "\", pos=" << pos
-                    << ", lat=" << ioff(navigationPoint[idx].latitude, 6) << ", lon=" << ioff(navigationPoint[idx].longitude, 6)
-                    << ", loadarea=" << loadarea);                
-                pos += 2;
+#endif
                 point_latitude = navigationPoint[idx].latitude;
                 point_longitude = navigationPoint[idx].longitude;
+                point_idx = idx;
+                LOGM_INFO(loggerNavig, "navigation_next_point", "msg=\"point found!\", name=\"" 
+                    << (char *)navigationPoint[idx].name << "\", pos=" << pos
+                    << ", lat=" << ioff(point_latitude, 6) << ", lon=" << ioff(point_longitude, 6)
+                    << ", loadarea=" << loadarea << ", idx=" << point_idx);
+                pos += 2;
                 return 0;
             }
         }
     }
 
-    LOGM_INFO(loggerNavig, "navigation_next_point", "not found!, pos=" << pos);
+    LOGM_INFO(loggerNavig, "navigation_next_point", "msg=\"point not found!\", pos=" << pos);
 
     return -1;
 }
 
 int navigation_approach(const char *path, int pos)
+// vrati 1, ak sa k danemu bodu cesty treba priblizit co najblizsie
 {
+#ifdef ISTRO_NAVIG_BALLDROP
+    char c0 = toupper(path[pos]);
+    char c1 = toupper(path[pos+1]);
+    return ((c0 == path[pos]) && (c1 == path[pos+1]));  // NAVIGATION_AREA_BALLDROP: ak zadane velkymi pismenami 
+#else
     return (path[pos] == '*');    // NAVIGATION_AREA_LOADING or NAVIGATION_AREA_UNLOADING
+#endif
+}
+
+volatile int navigationPoint_update_pending = 0;
+
+int navigation_point_get(int point_idx, double &point_latitude, double &point_longitude)
+{
+    point_latitude = ANGLE_NONE;
+    point_longitude = ANGLE_NONE;
+    
+    if ((point_idx < 0) || (point_idx >= NAVIGATION_POINT_COUNT)) {
+        return -1;
+    }
+
+    if (navigationPoint_update_pending) {
+        return -2;
+    }
+    
+    if ((navigationPoint[point_idx].latitude >= ANGLE_OK) || (navigationPoint[point_idx].longitude >= ANGLE_OK)) {
+        return 0;
+    }
+    
+    point_latitude = navigationPoint[point_idx].latitude;
+    point_longitude = navigationPoint[point_idx].longitude;
+
+    LOGM_INFO(loggerNavig, "navigation_point_get", "msg=\"coordinates acquired!\", name=\"" << (char *)navigationPoint[point_idx].name << "\""
+        << ", lat=" << ioff(point_latitude, 6) << ", lon=" << ioff(point_longitude, 6) << ", idx=" << point_idx);
+    return 1;
+}
+
+int navigation_point_set(int point_idx, double point_latitude, double point_longitude)
+{
+    if ((point_idx < 0) || (point_idx >= NAVIGATION_POINT_COUNT)) {
+        return -1;
+    }
+    
+    navigationPoint_update_pending = 1;
+    navigationPoint[point_idx].latitude = point_latitude;
+    navigationPoint[point_idx].longitude = point_longitude;
+    navigationPoint_update_pending = 0;
+    
+    navigation_getXY(navigationPoint[point_idx].latitude, navigationPoint[point_idx].longitude, 
+        navigationPointXY[point_idx].x, navigationPointXY[point_idx].y);
+
+    LOGM_INFO(loggerNavig, "navigation_point_set", "name=\"" << (char *)navigationPoint[point_idx].name << "\""
+        << ", lat=" << ioff(point_latitude, 6) << ", lon=" << ioff(point_longitude, 6) << ", idx=" << point_idx);
+    return 0;
+}
+
+int navigation_getXY(double latitude, double longitude, double &x, double &y)
+{
+    double dist, azimuth;
+
+    if ((navig_ref_latitude >= ANGLE_OK) || (navig_ref_longitude >= ANGLE_OK)) {
+        x = y = 0;
+        return 0;
+    }
+    
+    if ((latitude >= ANGLE_OK) || (longitude >= ANGLE_OK)) {
+        x = y = 0;
+        return 0;
+    }
+    
+    navigation_pGC->getDist(navig_ref_latitude, navig_ref_longitude, latitude, longitude, dist, azimuth);
+    
+    x = dist * sin(azimuth * M_PI / 180.0);
+    y = dist * cos(azimuth * M_PI / 180.0);
+    return 1;
+}
+
+int navigation_getLL(double x, double y, double &latitude, double &longitude)
+{
+    if ((navig_ref_latitude >= ANGLE_OK) || (navig_ref_longitude >= ANGLE_OK)) {
+        latitude = longitude = ANGLE_NONE;
+        return 0;
+    }
+
+    double azimuth = atan2(x, y) * 180 / M_PI;
+    double dist = sqrt(x * x + y * y);
+    
+    navigation_pGC->getCoord(navig_ref_latitude, navig_ref_longitude, dist, azimuth, latitude, longitude);
+    
+    return 1;
+}
+
+void navigation_points_calcXY(void)
+{
+    double navp_xmin = 0;
+    double navp_xmax = 0;
+    double navp_ymin = 0;
+    double navp_ymax = 0;
+
+    for(int i = 0; i < NAVIGATION_POINT_COUNT; i++) {
+        if (navigation_getXY(navigationPoint[i].latitude, navigationPoint[i].longitude, navigationPointXY[i].x, navigationPointXY[i].y)) {
+            if (i == 0) {
+                navp_xmin = navigationPointXY[i].x;
+                navp_xmax = navigationPointXY[i].x;
+                navp_ymin = navigationPointXY[i].y;
+                navp_ymax = navigationPointXY[i].y;
+            } else {
+                if (navp_xmin > navigationPointXY[i].x) navp_xmin = navigationPointXY[i].x;
+                if (navp_xmax < navigationPointXY[i].x) navp_xmax = navigationPointXY[i].x;
+                if (navp_ymin > navigationPointXY[i].y) navp_ymin = navigationPointXY[i].y;
+                if (navp_ymax < navigationPointXY[i].y) navp_ymax = navigationPointXY[i].y;
+            }
+        }
+    }
+
+    LOGM_INFO(loggerNavig, "navigation_points_calcXY", "ref_latitude=" << ioff(navig_ref_latitude, 6) << ", ref_longitude=" << ioff(navig_ref_longitude, 6)
+        << ", navp_xmin=" << ioff(navp_xmin, 0) << ", navp_xmax=" << ioff(navp_xmax, 0) << ", navp_ymin=" << ioff(navp_ymin, 0) << ", navp_ymax=" << ioff(navp_ymax, 0));
+}
+
+int navigation_ref_set(double ref_latitude, double ref_longitude)
+{  
+    navig_ref_latitude = ref_latitude;
+    navig_ref_longitude = ref_longitude;
+    
+    int ref = (navig_ref_latitude < ANGLE_OK) && (navig_ref_longitude < ANGLE_OK);
+
+    LOGM_INFO(loggerNavig, "navigation_ref_set", "ref=" << ref << ", ref_latitude=" << ioff(navig_ref_latitude, 6) << ", ref_longitude=" << ioff(navig_ref_longitude, 6));
+    
+    navigation_points_calcXY();
+    
+    return ref;
+}
+
+int navigation_ref_get(double& ref_latitude, double& ref_longitude)
+{
+    ref_latitude = navig_ref_latitude;
+    ref_longitude = navig_ref_longitude;
+    
+    return (navig_ref_latitude < ANGLE_OK) && (navig_ref_longitude < ANGLE_OK);
+}
+
+const double NAVIG_ZERO_EPS = 0.000001;
+
+double navigation_dist2PL(double x, double y, double x1, double y1, double x2, double y2, double *pxx, double *pyy) 
+// squared distance between point (x, y) and line segment (x1, y1) -> (x2, y2)
+{
+    /* segment direction vector */
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+    
+    /* squared segment length */
+    double l2 = dx * dx + dy * dy;
+    
+    /* dot product: vectors from (x1, y1) */
+    double dd = (x - x1) * dx + (y - y1) * dy; 
+    
+    /* calculate  - avoid division by zero */
+    double p = 0;
+    if (l2 > NAVIG_ZERO_EPS) {
+        p = dd / l2;
+    }
+    
+    /* calculate projection point */
+    double xx = x1;
+    double yy = y1;
+    
+    if (p > 1) {
+        xx = x2;
+        yy = y2;
+    } else
+    if (p > 0) {
+        xx += p * dx;
+        yy += p * dy;
+    }
+
+    if ((pxx != NULL) && (pyy != NULL)) {
+        *pxx = xx;  
+        *pyy = yy;
+    }
+
+    double dxx = x - xx;
+    double dyy = y - yy;
+    
+    return dxx * dxx + dyy * dyy;
 }

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 #include <sstream>
 #include "dmap.h"
 #include "logger.h"
@@ -14,6 +15,14 @@ void DegreeMap::init(void)
 {
     set(-1, -1, -1);
 }
+
+void DegreeMap::copy(const DegreeMap& d2)
+{
+    memcpy(dmap, d2.dmap, sizeof(dmap));
+    memcpy(dist, d2.dist, sizeof(dist));
+    memcpy(maxd, d2.maxd, sizeof(maxd));
+}
+
 
 void DegreeMap::set(int value, int dd, int md)
 {
@@ -131,6 +140,7 @@ void DegreeMap::shrink(float mult)
 }
 
 void DegreeMap::find(int minlen, int mid, int &idx1, int &idx2)
+// find widest interval of "1" (with width > minlen) closest to mid
 {
     int best_i1 = -1;
     int best_i2 = -1;
@@ -175,6 +185,47 @@ void DegreeMap::find(int minlen, int mid, int &idx1, int &idx2)
     idx2 = best_i2;
 }
 
+void DegreeMap::findbnd(int &idx1, int &idx2, int &len)
+// find min angle, max angle and max interval length; look for intervals of "0"
+{
+    int i1_min = -1;
+    int i2_max = -1;
+    int len_max = -1;
+
+    int i1, i2;
+    
+    i1 = 0;
+    while (i1 < DEGREE_MAP_COUNT) {
+        if (dmap[i1] == 1) {
+            i1++;
+            continue;
+        }
+        // we found start of interval of "0" -> i1
+        i2 = i1 + 1;
+        while ((i2 < DEGREE_MAP_COUNT) && (dmap[i2] == 0)) {
+            i2++;
+        }
+        i2--;
+        // end of interval -> i2
+        // store lowest i1
+        if (i1_min < 0) {
+            i1_min = i1;
+        }
+        // store highest i2
+        i2_max = i2;
+        // store max interval length
+        if (i2 - i1 + 1 > len_max) {
+            len_max = i2 - i1 + 1;
+        }
+        // skip to the next interval
+        i1 = i2 + 1;
+    }    
+
+    idx1 = i1_min;
+    idx2 = i2_max;
+    len = len_max;
+}
+
 void DegreeMap::print(const std::string &str)
 {
     char ss[DEGREE_MAP_COUNT + 1];
@@ -201,4 +252,12 @@ void DegreeMap::print(const std::string &str)
     }
 
     LOGM_TRACE(loggerDegreeMap, "print", "m=\"" << str << "\", maxd=[" << ss3.str() << "]");    
+}
+
+void DegreeMap::remap(int dd_threshold)
+{
+    for(int i = 0; i < DEGREE_MAP_COUNT; i++) {
+        if (dist[i] < 0) continue;
+        dmap[i] = dist[i] > dd_threshold;
+    }
 }

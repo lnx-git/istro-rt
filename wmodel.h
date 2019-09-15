@@ -5,7 +5,6 @@
 #include "dmap.h"
 
 using namespace cv;
-using namespace std;
 
 const int WMGRID_HEIGHT = 2001;
 const int WMGRID_WIDTH  = 2001;
@@ -58,19 +57,26 @@ public:
     float last_x0;
     float last_y0;
     float last_alfa;
-    
+
+    int last_ref;
+    int last_angle;
+    int last_angle_min;
+    int last_angle_max;
+
 public:
     WorldModel();
     ~WorldModel();
 
     void init(void);
-    void updateGrid(const DegreeMap& dmap, float x0, float y0, float alfa, unsigned char mb, unsigned char vb, long imgnum);
+    void updateGrid(const DegreeMap& dmap, float x0, float y0, float alfa, 
+             int process_ref, int process_angle, int process_angle_min, int process_angle_max,
+             unsigned char mb, unsigned char vb, long imgnum);
     int  evalGrid(float x0, float y0, float alfa, DegreeMap& dmap);
     void drawGrid(Mat& img);
     void drawGridFull(Mat& img);
 
 public:
-    void saveImage(long image_number, const string& str, const Mat& img);
+    void saveImage(long image_number, const std::string& str, const Mat& img);
     void test(void);
 };
 

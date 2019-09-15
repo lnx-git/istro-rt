@@ -29,6 +29,7 @@ public:
     /* dist - distance in metres */
     /* azimuth - is the heading measured clockwise from north (degrees) */
     void getDist(double lat1, double lon1, double lat2, double lon2, double& dist, double& azimuth);
+    void getCoord(double lat1, double lon1, double dist, double azimuth, double &lat2, double &lon2);
 };
 
 #endif

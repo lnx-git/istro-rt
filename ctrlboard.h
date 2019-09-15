@@ -11,12 +11,12 @@ Zadefinnoval som to takoto:
 #define S2_CENTER 335
 #define S2_MAX 445
 
-S1 je servo riadenia, S1_MIN je plny pravym, S1_MAX je plnylavy, stred je odhadom S1_CENTER
+S1 je servo riadenia, S1_MIN je plny pravy, S1_MAX je plny lavy, stred je odhadom S1_CENTER
 S2 je motor, S2_MAX je plny dopredu, S2_min je plny dozadu, S_CENTER je stred (STOP).
 */
 
 // Steering angle limits
-#define SA_STRAIGHT    334   // 92
+#define SA_STRAIGHT    340    //334   // 92    // upravene 13.4.2019, lebo pri 334 zatacal moc vlavo
 #define SA_MIN         215    //SA_STRAIGHT-50
 #define SA_MAX         455    //SA_STRAIGHT+50
 #define SA_FIX         (SA_STRAIGHT - 90)
@@ -28,16 +28,19 @@ S2 je motor, S2_MAX je plny dopredu, S2_min je plny dozadu, S_CENTER je stred (S
 #define VEL_MIN     VEL_ZERO - 222
 #define VEL_OPT     VEL_ZERO + 8     // lipol: (8 + 7)
 #define VEL_BACK    VEL_ZERO - 11    // lipol: (-10 - 5)
+//#define VEL_HIGH    VEL_ZERO + 16
 
-#define CTRLB_STATE_START  0
-#define CTRLB_STATE_STOP   1
-#define CTRLB_STATE_FWD    2
-#define CTRLB_STATE_BCK    3
-#define CTRLB_STATE_RECO   4
-#define CTRLB_STATE_OBSTF  5   // prekazka vpredu
-#define CTRLB_STATE_OBSTB  6   // prekazka vzadu
-#define CTRLB_STATE_OBSTA  7   // prekazka vpredu aj vzadu
-#define CTRLB_STATE_EBTN   8   // emergency button
+#define CTRLB_STATE_START  0   // nic nerobi
+#define CTRLB_STATE_STOP   1   // zastavi robota, ale ak je predchadzajuci stav bol stop tak nic nerobi
+#define CTRLB_STATE_FWD    2   // robot ide dopredu, pozera ci nie je prekazka pred robotom, prepina do stavu OBSTF 
+#define CTRLB_STATE_BCK    3   // robot ide dozadu, pozera ci nie je prekazka za robotom robotom, prepina do stavu OBSTB
+#define CTRLB_STATE_RECO   4   // recovery - nepouziva sa
+#define CTRLB_STATE_OBSTF  5   // prekazka vpredu; nedovoli ist robotovi dopredu, ak predchadzajuci stav bol fwd tak zastavi robota
+#define CTRLB_STATE_OBSTB  6   // prekazka vzadu; nedovoli ist robotovi dozadu, ak predchadzajuci stab bol bck tak zastavi robota
+#define CTRLB_STATE_OBSTA  7   // prekazka vpredu aj vzadu; v podstate ako stop a nedovoli ist robotovi ani dopredu ani dozadu
+#define CTRLB_STATE_EBTN   8   // emergency button; bolo stlacene emergency tlacitko, zastavi robota ak ebtn bol predchadzajuci stav iny ako ebtn inac nic nerobi
+
+#define CTRLB_STATE_OBSTACLE(s) ((s == CTRLB_STATE_OBSTF) || (s == CTRLB_STATE_OBSTB) || (s == CTRLB_STATE_OBSTA) || (s == CTRLB_STATE_EBTN))
 
 #define CTRLB_LED_PROGRAM_OFF    0
 #define CTRLB_LED_PROGRAM_WHITE  1
@@ -112,6 +115,7 @@ public:
     void writeString(const char *str);
 void setXX4(void); 
 void setXX5(void);
+    void setBallDrop(int cnt);
 
     int getImuData(double &euler_x, double &euler_y, double &euler_z, int &calib_gyro, int &calib_accel, int &calib_mag);
     int getServoData(int &state, double &heading, int &ircv, double &ircv500, int &angle, int &velocity, int &loadd, int &cbtime, 

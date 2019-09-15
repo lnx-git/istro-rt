@@ -2,7 +2,7 @@
 #define __CONFIG_H__
 
 static const double ANGLE_NONE = 999999;
-static const double ANGLE_OK   = 999998;   // < ANGLE_OK
+static const double ANGLE_OK   = 999998;   // angle is valid only if "angle < ANGLE_OK"
 
 class Config {   
 public:
@@ -16,6 +16,7 @@ public:
     int useNoWait;            // do not wait after program start
     int useStartTime;
     int useNavigation;
+    int useQRScan;
     
     char* ControlBoardPortName;
     char* ControlBoard2PortName;
@@ -37,6 +38,8 @@ public:
     char* navigationPath;
 
     int velocityFwd;
+    int velocityFwd2;
+    int velocityFwd3;
     int velocityBack;
 
 public:    

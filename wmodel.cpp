@@ -5,6 +5,8 @@
 #include "mtime.h"
 #include "dmap.h"
 #include "logger.h"
+#include "config.h"    // ANGLE_NONE
+#include "navig.h"
 
 using namespace std;
 
@@ -249,7 +251,7 @@ int WMGrid::update(const DegreeMap& dmap, float x0, float y0, float alfa, unsign
                         << ", x0=" << ioff(x0, 2) << ", y0=" << ioff(y0, 2) << ", x2=" << ioff(x2, 2) << ", y2=" << ioff(y2, 2) << ", d=" << ioff(d , 2) 
                         << ", dx=" << ioff(dx, 2) << ", dy=" << ioff(dy, 2) << ", dx_abs=" << ioff(dx_abs, 2) << ", dy_abs=" << ioff(dy_abs, 2) 
                         << ", ddy=" << ddy << ", dd=" << dd << ", dgx=" << dgx); */
-					set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
+                    set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
                     ddy -= dd;
                     if (ddy <= -WMGRID_INT_HALF) {
                         ddy += WMGRID_INT_MULT;
@@ -279,7 +281,7 @@ int WMGrid::update(const DegreeMap& dmap, float x0, float y0, float alfa, unsign
                         << ", x0=" << ioff(x0, 2) << ", y0=" << ioff(y0, 2) << ", x2=" << ioff(x2, 2) << ", y2=" << ioff(y2, 2) << ", d=" << ioff(d , 2) 
                         << ", dx=" << ioff(dx, 2) << ", dy=" << ioff(dy, 2) << ", dx_abs=" << ioff(dx_abs, 2) << ", dy_abs=" << ioff(dy_abs, 2) 
                         << ", ddx=" << ddx << ", dd=" << dd << ", dgy=" << dgy); */
-					set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
+                    set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
                     ddx += dd;
                     if (ddx >= WMGRID_INT_HALF) {
                         ddx -= WMGRID_INT_MULT;
@@ -297,7 +299,7 @@ int WMGrid::update(const DegreeMap& dmap, float x0, float y0, float alfa, unsign
                         << ", x0=" << ioff(x0, 2) << ", y0=" << ioff(y0, 2) << ", x2=" << ioff(x2, 2) << ", y2=" << ioff(y2, 2) << ", d=" << ioff(d , 2) 
                         << ", dx=" << ioff(dx, 2) << ", dy=" << ioff(dy, 2) << ", dx_abs=" << ioff(dx_abs, 2) << ", dy_abs=" << ioff(dy_abs, 2) 
                         << ", ddx=" << ddx << ", dd=" << dd << ", dgy=" << dgy); */
-					set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
+                    set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
                     ddx -= dd;
                     if (ddx <= -WMGRID_INT_HALF) {
                         ddx += WMGRID_INT_MULT;
@@ -312,11 +314,11 @@ int WMGrid::update(const DegreeMap& dmap, float x0, float y0, float alfa, unsign
         }
         // no obstacle - last point should also be cleared
         if (v > 0) {
-			set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
+            set(gy, gx, (get(gy, gx) | mb) & vbn);  // g[gy][gx] = (g[gy][gx] | mb) & vbn;
         }
         if ((gx != gx2) || (gy != gy2)) {
             if (v > 0) {
-				set(gy2, gx2, (get(gy2, gx2) | mb) & vbn);  // g[gy2][gx2] = (g[gy2][gx2] | mb) & vbn;    // quick&dirty fix
+                set(gy2, gx2, (get(gy2, gx2) | mb) & vbn);  // g[gy2][gx2] = (g[gy2][gx2] | mb) & vbn;    // quick&dirty fix
             }
             /* LOGM_TRACE(loggerWorldModel, "WMGrid_update", "msg=\"end-point error\"" << ", i=" << i << ", v=" << v << ", a=" << ioff(a, 4) 
                 << ", gx=" << gx << ", gy=" << gy << ", gx2=" << gx2 << ", gy2=" << gy2 << ", grid_x0=" << ioff(grid_x0, 2) << ", grid_y0=" << ioff(grid_y0, 2)
@@ -336,7 +338,7 @@ int WMGrid::update(const DegreeMap& dmap, float x0, float y0, float alfa, unsign
     // apply all information about obstacles at the end (to avoid overwrites from white space)
     for(int i = 0; i < vb_cnt; i++) {
         /* LOGM_DEBUG(loggerWorldModel, "WMGrid_update", "msg=\"set3\"" << ", i=" << i << ", gx=" << vb_gx[i] << ", gy=" << vb_gy[i] << ", grid_x0=" << ioff(grid_x0, 2) << ", grid_y0=" << ioff(grid_y0, 2)); */
-		set(vb_gy[i], vb_gx[i], (get(vb_gy[i], vb_gx[i]) | mb) | vb);  // g[vb_gy[i]][vb_gx[i]] = (g[vb_gy[i]][vb_gx[i]] | mb) | vb;
+        set(vb_gy[i], vb_gx[i], (get(vb_gy[i], vb_gx[i]) | mb) | vb);  // g[vb_gy[i]][vb_gx[i]] = (g[vb_gy[i]][vb_gx[i]] | mb) | vb;
     }
     
     timeEnd("WMGrid::update", t);
@@ -541,11 +543,17 @@ void WorldModel::init(void)
     last_x0 = 0;
     last_y0 = 0;
     last_alfa = 0;
+    last_ref = -1;
+    last_angle = (int)ANGLE_NONE;
+    last_angle_min = (int)ANGLE_NONE;
+    last_angle_max = (int)ANGLE_NONE;
 
     pgrid->init();
 }
 
-void WorldModel::updateGrid(const DegreeMap& dmap, float x0, float y0, float alfa, unsigned char mb, unsigned char vb, long imgnum)
+void WorldModel::updateGrid(const DegreeMap& dmap, float x0, float y0, float alfa, 
+         int process_ref, int process_angle, int process_angle_min, int process_angle_max,
+         unsigned char mb, unsigned char vb, long imgnum)
 {
     int res = pgrid->update(dmap, x0, y0, alfa, mb, vb);
     if (res > 0) {
@@ -553,8 +561,13 @@ void WorldModel::updateGrid(const DegreeMap& dmap, float x0, float y0, float alf
         last_x0 = x0;
         last_y0 = y0;
         last_alfa = alfa;
+        last_ref = process_ref;
+        last_angle = process_angle;
+        last_angle_min = process_angle_min;
+        last_angle_max = process_angle_max;
     }
     LOGM_DEBUG(loggerWorldModel, "updateGrid", "x0=" << ioff(x0, 2) << ", y0=" << ioff(y0, 2) << ", alfa=" << ioff(alfa, 2) 
+        << ", process_ref=" << process_ref << ", process_angle=" << process_angle << ", process_angle_min=" << process_angle << ", process_angle_max=" << process_angle_max
         << ", imgnum=" << imgnum << ", res=" << res);    
 }
 
@@ -574,6 +587,8 @@ const int WMGRID_DRAW_GHEIGHT = 2 * WMGRID_DRAW_GHEIGHT2 + 1;
 
 void WorldModel::drawGrid(Mat& img)
 {
+    double t = timeBegin();
+
     img.create(480,640,CV_8UC3);
     img.setTo(Scalar(20,20,20));
 //    line(img, Point(0,320), Point(640,320), Scalar(128,128,128), 1, 8, 0);
@@ -582,40 +597,42 @@ void WorldModel::drawGrid(Mat& img)
     // center = robot 
     int gx0 = WMGRID_CENTER_IDX + round((last_x0 - pgrid->grid_x0) / WMGRID_CELL_DX);
     int gy0 = WMGRID_CENTER_IDY + round((last_y0 - pgrid->grid_y0) / WMGRID_CELL_DY);
-	
+    
     int gx1 = gx0 - WMGRID_DRAW_GWIDTH2;  // top left corner
-	if (gx1 < 0) gx1 = 0;
-	if (gx1 > WMGRID_WIDTH - WMGRID_DRAW_GWIDTH) gx1 = WMGRID_WIDTH - WMGRID_DRAW_GWIDTH;
+    if (gx1 < 0) gx1 = 0;
+    if (gx1 > WMGRID_WIDTH - WMGRID_DRAW_GWIDTH) gx1 = WMGRID_WIDTH - WMGRID_DRAW_GWIDTH;
 
     int gy1 = gy0 - WMGRID_DRAW_GHEIGHT2;
-	if (gy1 < 0) gy1 = 0;
-	if (gy1 > WMGRID_HEIGHT - WMGRID_DRAW_GHEIGHT) gy1 = WMGRID_HEIGHT - WMGRID_DRAW_GHEIGHT;
+    if (gy1 < 0) gy1 = 0;
+    if (gy1 > WMGRID_HEIGHT - WMGRID_DRAW_GHEIGHT) gy1 = WMGRID_HEIGHT - WMGRID_DRAW_GHEIGHT;
 
-	int gx2 = gx1 + 2 * WMGRID_DRAW_GWIDTH2;
+    int gx2 = gx1 + 2 * WMGRID_DRAW_GWIDTH2;
     int gy2 = gy1 + 2 * WMGRID_DRAW_GHEIGHT2;
 
     const int dx = 6;    // width of one grid cell in pixels
     const int dy = 6;    // height of one grid cell in pixels
 
-	float offx = (last_x0 - pgrid->grid_x0) - round((last_x0 - pgrid->grid_x0) / WMGRID_CELL_DX) * WMGRID_CELL_DX;  // -WMGRID_CELL_DX/2 < offx <= WMGRID_CELL_DX/2
-	offx = offx * dx / WMGRID_CELL_DX;  // -3 < offx < +3
-	float offy = (last_y0 - pgrid->grid_y0) - round((last_y0 - pgrid->grid_y0) / WMGRID_CELL_DY) * WMGRID_CELL_DY;  // -WMGRID_CELL_DY/2 < offy <= WMGRID_CELL_DY/2
-	offy = offy * dy / WMGRID_CELL_DY;  // -3 < offy < +3
-	offy = -offy;
+    float offx = (last_x0 - pgrid->grid_x0) - round((last_x0 - pgrid->grid_x0) / WMGRID_CELL_DX) * WMGRID_CELL_DX;  // -WMGRID_CELL_DX/2 < offx <= WMGRID_CELL_DX/2
+    offx = offx * dx / WMGRID_CELL_DX;  // -3 < offx < +3
+    float offy = (last_y0 - pgrid->grid_y0) - round((last_y0 - pgrid->grid_y0) / WMGRID_CELL_DY) * WMGRID_CELL_DY;  // -WMGRID_CELL_DY/2 < offy <= WMGRID_CELL_DY/2
+    offy = offy * dy / WMGRID_CELL_DY;  // -3 < offy < +3
+    offy = -offy;
 
     int x1 = round(-dx / 2 - offx + (640 - WMGRID_DRAW_GWIDTH * dx) / 2);
     int y1 = round(-dy / 2 - offy + (480 - WMGRID_DRAW_GHEIGHT * dy) / 2);
+
+    rectangle(img, Point(x1, y1), Point(x1 + (gx2 - gx1 + 1) * dx - 1, y1 + (gy2 - gy1 + 1) * dy - 1), Scalar(80, 80, 80), CV_FILLED);
     
     int y = y1;
     for(int gy = gy2; gy >= gy1; gy--) {
         int x = x1;
         for(int gx = gx1; gx <= gx2; gx++) {
-            Scalar color;
+            Scalar color = Scalar(80, 80, 80);
             unsigned char b = pgrid->get(gy, gx);
 
             if ((b & (WMGRID_LIDAR_MBIT | WMGRID_VISION_MBIT)) == 0) {
                 // grey = no information
-                color = Scalar(80, 80, 80);
+                // color = Scalar(80, 80, 80);
             } else
             if ((b & (WMGRID_LIDAR_VBIT | WMGRID_VISION_VBIT)) == 0) {
                 // green = no obstacle (dark = one source, light = lidar and vision)
@@ -638,58 +655,100 @@ void WorldModel::drawGrid(Mat& img)
                 }
             }
 
-
-            rectangle(img, Point(x, y), Point(x + dx - 1, y + dy - 1), color, CV_FILLED);
+            if (color[0] != 80) {
+                rectangle(img, Point(x, y), Point(x + dx - 1, y + dy - 1), color, CV_FILLED);
+            }
             x += dx;
         }
         y += dy;
     }
-	
+    
     int xx = round(x1 + ((gx0 - gx1) + 0.5) * dx + offx);
     int yy = round(y1 + ((gy0 - gy1) + 0.5) * dy + offy);
-	
+    
+    /* draw navigation points */
+    if (last_ref > 0) {
+        int navp_cnt = navigation_point_cnt();
+        for(int i = 0; i < navp_cnt; i++) {
+            double dxx = (navigationPointXY[i].x - last_x0) * dx / WMGRID_CELL_DX;
+            double dyy = (navigationPointXY[i].y - last_y0) * dy / WMGRID_CELL_DY;
+            if ((dxx >= -WMGRID_DRAW_GWIDTH2 * dx) && (dxx <= WMGRID_DRAW_GWIDTH2 * dx) && 
+                (dyy >= -WMGRID_DRAW_GHEIGHT2 * dy) && (dyy <= WMGRID_DRAW_GHEIGHT2 * dy)) {
+                int navp_xx = xx + ((int)dxx);
+                int navp_yy = yy - ((int)dyy);
+                line(img, Point(navp_xx - 3, navp_yy), Point(navp_xx + 3, navp_yy), Scalar(0, 255, 255), 1, 8, 0);
+                line(img, Point(navp_xx, navp_yy - 3), Point(navp_xx, navp_yy + 3), Scalar(0, 255, 255), 1, 8, 0);
+                putText(img, (char *)navigationPoint[i].name, Point(navp_xx + 3, navp_yy + 3), CV_FONT_HERSHEY_DUPLEX, 0.8, Scalar(0, 255, 255)); 
+            }
+        }
+    }
+
+    /* draw robot position */
     line(img, Point(xx - 3, yy), Point(xx + 3, yy), Scalar(255, 255, 255), 1, 8, 0);
-	line(img, Point(xx, yy - 3), Point(xx, yy + 3), Scalar(255, 255, 255), 1, 8, 0);
+    line(img, Point(xx, yy - 3), Point(xx, yy + 3), Scalar(255, 255, 255), 1, 8, 0);
 
-    int dxx = 100 * sin(last_alfa * M_PI / 180.0);
-    int dyy = 100 * cos(last_alfa * M_PI / 180.0);
-
+    int dxx = 120 * sin(last_alfa * M_PI / 180.0);
+    int dyy = 120 * cos(last_alfa * M_PI / 180.0);
     line(img, Point(xx, yy), Point(xx + dxx, yy - dyy), Scalar(255, 255, 255), 1, 8, 0);
 
+    if ((last_angle_min < ANGLE_OK) && (last_angle_max < ANGLE_OK)) {
+        int angle1 = (last_alfa + 90 - last_angle_min);
+        int angle2 = (last_alfa + 90 - last_angle_max);
+        dxx = 80 * sin(angle1 * M_PI / 180.0);
+        dyy = 80 * cos(angle1 * M_PI / 180.0);
+        line(img, Point(xx, yy), Point(xx + dxx, yy - dyy), Scalar(255, 255, 0), 1, 8, 0);
+        dxx = 80 * sin(angle2 * M_PI / 180.0);
+        dyy = 80 * cos(angle2 * M_PI / 180.0);
+        line(img, Point(xx, yy), Point(xx + dxx, yy - dyy), Scalar(255, 255, 0), 1, 8, 0);
+        ellipse(img, Point(xx, yy), Size(80, 80), 0, angle1 - 90, angle2 - 90, Scalar(255, 255, 0));
+    }
+    if (last_angle < ANGLE_OK) {
+        dxx = 100 * sin((last_alfa + 90 - last_angle) * M_PI / 180.0);
+        dyy = 100 * cos((last_alfa + 90 - last_angle) * M_PI / 180.0);
+        line(img, Point(xx, yy), Point(xx + dxx, yy - dyy), Scalar(0, 255, 255), 1, 8, 0);
+    }
+
     LOGM_DEBUG(loggerWorldModel, "drawGrid", "last_x0=" << ioff(last_x0, 2) << ", last_y0=" << ioff(last_y0, 2) << ", last_alfa=" << ioff(last_alfa, 2)
-		<< ", gx0=" << gx0 << ", gy0=" << gy0
-		<< ", offx=" << ioff(offx, 2) << ", offy=" << ioff(offy, 2)
-		<< ", x1=" << x1 << ", y1=" << y1 
-		<< ", xx=" << xx << ", yy=" << yy
-		<< ", xxd=" << xx-x1 << ", yyd=" << yy-y1);
+        << ", gx0=" << gx0 << ", gy0=" << gy0
+        << ", offx=" << ioff(offx, 2) << ", offy=" << ioff(offy, 2)
+        << ", x1=" << x1 << ", y1=" << y1 
+        << ", xx=" << xx << ", yy=" << yy
+        << ", xxd=" << xx-x1 << ", yyd=" << yy-y1);
+
+    timeEnd("WorldModel::drawGrid", t);
 }
 
 void WorldModel::drawGridFull(Mat& img)
 {
+    double t = timeBegin();
+
     const int dx = 2;    // width of one grid cell in pixels
     const int dy = 2;    // height of one grid cell in pixels
 
     img.create(WMGRID_HEIGHT * dy, WMGRID_WIDTH * dx, CV_8UC3);
     img.setTo(Scalar(20, 20, 20));
-	
+    
     int gx1 = 0;  // top left corner
     int gy1 = 0;
-	int gx2 = WMGRID_WIDTH - 1;
+    int gx2 = WMGRID_WIDTH - 1;
     int gy2 = WMGRID_HEIGHT - 1;
 
     int x1 = 0;
     int y1 = 0;
-    
+
+    rectangle(img, Point(x1, y1), Point(x1 + (gx2 - gx1 + 1) * dx - 1, y1 + (gy2 - gy1 + 1) * dy - 1), Scalar(80, 80, 80), CV_FILLED);
+
+    int cnt = 0;    
     int y = y1;
     for(int gy = gy2; gy >= gy1; gy--) {
         int x = x1;
         for(int gx = gx1; gx <= gx2; gx++) {
-            Scalar color;
+            Scalar color = Scalar(80, 80, 80);
             unsigned char b = pgrid->get(gy, gx);
 
             if ((b & (WMGRID_LIDAR_MBIT | WMGRID_VISION_MBIT)) == 0) {
                 // grey = no information
-                color = Scalar(80, 80, 80);
+                // color = Scalar(80, 80, 80);
             } else
             if ((b & (WMGRID_LIDAR_VBIT | WMGRID_VISION_VBIT)) == 0) {
                 // green = no obstacle (dark = one source, light = lidar and vision)
@@ -712,13 +771,18 @@ void WorldModel::drawGridFull(Mat& img)
                 }
             }
 
-            rectangle(img, Point(x, y), Point(x + dx - 1, y + dy - 1), color, CV_FILLED);
+            if (color[0] != 80) {
+                rectangle(img, Point(x, y), Point(x + dx - 1, y + dy - 1), color, CV_FILLED);
+                cnt++;
+            }
             x += dx;
         }
         y += dy;
     }
-	
-    LOGM_DEBUG(loggerWorldModel, "drawGridFull", "x1=" << x1 << ", y1=" << y1);
+    
+    LOGM_DEBUG(loggerWorldModel, "drawGridFull", "x1=" << x1 << ", y1=" << y1 << ", cnt=" << cnt);
+
+    timeEnd("WorldModel::drawGridFull", t);
 }
 
 void WorldModel::saveImage(long image_number, const string& str, const Mat& img)
@@ -731,7 +795,7 @@ void WorldModel::saveImage(long image_number, const string& str, const Mat& img)
 
     if (!img.empty()) {
         double t = timeBegin();
-        sprintf(filename, "%srt2017_%07u_%07u_%s", outputDir.c_str(), (unsigned int)save_rand, (unsigned int)(image_number<0?999999:image_number), str.c_str());
+        sprintf(filename, "%srt2019_%07u_%07u_%s", outputDir.c_str(), (unsigned int)save_rand, (unsigned int)(image_number<0?999999:image_number), str.c_str());
         imwrite(filename, img);
         sprintf(filename, "WorldModel::saveImage('%s')", str.c_str());
         timeEnd(filename, t);
@@ -740,6 +804,7 @@ void WorldModel::saveImage(long image_number, const string& str, const Mat& img)
 
 void WorldModel::test(void)
 {
+/*
     long image_number = 0;
     
     Mat img;
@@ -787,7 +852,7 @@ void WorldModel::test(void)
     updateGrid(dmap, x0 + 0.30, y0 + 0.30, alfa, WMGRID_LIDAR_MBIT, WMGRID_LIDAR_VBIT, image_number);
     drawGrid(img);    
     saveImage(image_number++, "grid.png", img);
-/*
+
     evalGrid(x0 + 1, y0 + 1, alfa, dmap2);
     dmap2.print("dmap2");
     updateGrid(dmap2, x0, y0, alfa + 180, WMGRID_LIDAR_MBIT, WMGRID_LIDAR_VBIT, image_number);

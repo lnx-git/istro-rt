@@ -7,6 +7,9 @@
 #endif
 #endif
 
+// fixme: this header file must be included before any other .h files with "using namespace cv;"
+// fixme: otherwise an "error: reference to 'ACCESS_MASK' is ambiguous" will be reported
+
 #include <pthread.h>
 
 //const int THDATA_TYPE_NONE = 0;
@@ -64,7 +67,8 @@ private:
     void dataLock(void);
     void dataUnlock(void);
     
-    void printState(int state_new);
+    void getState(char *str);
+    void printState(int state_new, char *str);
 
 public:
     void *getData(/*int type,*/ int state, int state_new);

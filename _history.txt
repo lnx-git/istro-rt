@@ -1,3 +1,144 @@
+13.9.2019
+- kml: vygenerovane qr-kody pre mapu v Deggendorfe
+- html: upravena html stranka s mapami "map_rt2019.html"
+- istro_rt2019.cpp: optimalizacia objemu logov - v system.h boli vytvorene prepinace *_LOG_TRACE0
+
+12.9.2019
+- vision.cpp: zmena velkosti bloku EPSIZE a EP_THRESHOLDM, aby citlivejsie detekoval zelenu farbu travy
+- navig/navmap: doplnene cesty do mapy parku v Deggendorfe ("ISTRO_MAP_DEGGENDORF")
+- camera.cpp: upravena inicializacia kamery, aby pouzival -1 = prvu kameru, ktoru najde (kvoli jetsonu)
+- script: cesty v skriptoch upravene, podla adresarovej struktury Jetson Nano
+- script/logp.cpp: docasna uprava ciest bez pouzitia ramdisku
+
+31.7.2019
+- rt2019: priprava na Robotour 2019, zmenene prefixy ro2019 na rt2019
+- navmap_data: doplnene cesty do mapy "ISTRO_MAP_BA_SADJK"
+
+23.6.2019
+- navmap_data: doplnena mapa pre Robotour Marathon v Marianskych Laznach "ISTRO_MAP_MLAZNE_HAMRNIKY"
+
+22.6.2019
+- gps_thread: pri zdetekovani kuzela istej velkosti v blizkosti ciela rovno zastavi a vylozi lopticku (point_passed)
+- vision: korekcia uhlov v generateEPoints() vo FISHEYE mode - deformacia okolo priameho smeru bola moc velka
+
+21.6.2019
+- vision: korekcia uhlov v generateEPoints() vo FISHEYE mode - robot malo zatacal, ked videl kuzele
+- lidar: pre TM571 bol zvyseny LIDAR_STOP_COUNT, aby sa znizila citlivost na zastavenie kvoli strave
+
+19.6.2019
+- istro_ro2019:process_thread: implementovane navigovanie na kuzele "PROCESS_STATE_CONE_SEEK"
+
+18.6.2019
+- vision: doplneny prepinac "ISTRO_VISION_ORANGECONE" - pre rozpoznavanie kuzelov na RoboOrientering
+
+16.6.2019
+- istro_ro2019: doplneny prepinac "ISTRO_NAVMAP_NO_ROUTING" - mod pre RoboOrienteering (neroutuje po cestach)
+- lidar: odstranene zakomentovane volania pre lokalnu kopiu dat, mutex, request/available z projektu Mikes
+- navmap_data: doplnena mapa "ISTRO_MAP_MLAZNE_HAMRNIKY", iba jedna cesta, aj kriky a kraj parku
+- ctrlboard: implementovana funkcia na vykladanie lopticiek - setBallDrop()
+- istro_ro2019: implementovane vykladanie lopticiek "PROCESS_STATE_BALLDROP"
+- navig/navmap: oddelenie mapy ISTRO_MAP_PISEK_PALSADY2 - bez odbociek pri starte Robotem Rovne
+
+14.6.2019
+- lidar: podpora pre lidar SICK TIM571 "ISTRO_LIDAR_TIM571" - zdrojaky od P.Petrovica (projekt Mikes)
+
+9.6.2019
+- ro2019: priprava na RoboOrienteering 2019, zmenene prefixy rr2019 na ro2019
+- vision: vo funkcii calcMarkers optimalizacia cyklu, zrusene nasobenie 3*j
+- vision: implementovany mod "ISTRO_VISION_BLACKMODE" - trava je vsetko tmave/cierne
+- navmap_data: pridany prepinac pre mapu "ISTRO_MAP_BA_SADJK" - iba 3 body na volne jazdenie pre RoboOrienteering
+
+11.5.2019
+- istro_ib2019::loadSample: rozsirena mnozina samplov o lepsie rozpoznavanie na zaklade testov RobotemRovne
+- navig_data: posunuty navigacny bod *2 do W1->W2
+- istro_ib2019::gps_thread: pripraveny hotfix "fixme_navp_azimuth2", lebo aj RobotemRovne sa treba vratit naspat
+- istro_ib2019::speedctl_process: uprava, aby nenastavoval stale rychlost (ale iba pri zmene), 
+    inak arduino nezobrazovalo spravne stav lediek
+ 
+10.5.2019
+- rr2019: priprava na Robotem Rovne 2019, zmenene prefixy ib2019 na rr2019
+- navmap_data: doplnena mapa "ISTRO_MAP_PISEK_PALSADY", iba nove cesty, navigacne body rovnake ako v 2018
+
+9.5.2019
+- istro_ib2019::speedctl_process: implementacia prisposobovania rychlosti prekazkam podla dmap
+
+8.5.2019
+- config: doplnene parametre pre zvysene rychlosti - VelocityFwd2 a VelocityFwd3
+
+27.4.2019
+- istro_ib2019::gps_thread: priamo na sutazi Istrobot urobeny narychlo hotfix "fixme_navp_azimuth",
+    lebo sa prejavoval problem chybneho urcenia navp_azimuth pri priblizovani k cielu navigacie pod 5 metrov
+
+23.4.2019
+- vision: doplnena "FISHEYE" transformacia bodov v obraze, prepinac "ISTRO_VISION_FISHEYE"
+- vision: upravene vykreslovanie drawEPWeight(), aby lepsie kopirovalo zahnute krivky
+- istro_ib2019::prog_loop: upraveny program BACKFWD, aby odosielal STOP prikaz pri zastaveni
+
+22.4.2019
+- istro_ib2019::prog_loop: opravene detekovanie prerusenia programu od prekazky, CTRLB_STATE_OBSTACLE
+
+21.4.2019
+- ctrlboard: upravene SA_STRAIGHT na 330 (mierne vpravo), lebo pri 334 zatacal moc vlavo
+- istro_ib2019: upraveny prog_loop(), aby opakovane posielal rychlost/smer pri vykonavani programu (cuvani)
+- navig_data("FEI"): bod Y2 posunuty o 5m blizsie k Y1, aby sa robot otacal skor
+- navig_data("FEI"): body *1 a *2 nastavene defaultne na Y1 a Y2, aby sa dali pouzivat s vacsou GPS presnostou 
+- navmap_data: doplnena variacia mapy ISTRO_MAP_BA_FEISTU2, bez odbocky na parkovisko pri Y2 (mozny zdroj problemov)
+
+13.4.2019
+- vision: implementovane nacitavanie vision_mask.png, vykreslovanie a pouzitie pri calcEPWeight()
+
+12.4.2019
+- system.h: doplneny prepinac "ISTRO_VISION_YELLOWLANE" na detekciu zltej ciary pre IstroBot
+- istro_ib2019.cpp: nacitavanie OffRoad vzoriek pre rozpoznavanie zltej ciary 
+- navig_data.cpp: doplnenie bodov X1, X2, Y1, Y2 s oficialnymi suradnicami kategorie "Tam a spat" 
+
+17.3.2019
+- ib2019: priprava na Istrobot 2019, zmenene prefixy rt2018 na ib2019
+- navig/navmap: doplnenie novej mapy s okolim FEI STU (ISTRO_MAP_BA_FEISTU)
+
+3.11.2018
+- jazda pre Robotour Marathon na hradzi
+- navig/navmap: doplnenie novej mapy s hradzou (ISTRO_MAP_BA_HRADZA)
+
+19.8.2018
+- wmodel: urychlenie zapisovanie wmgrid a wmgrif obrazkov
+
+10.8.2018
+- vision_thread: scanovanie qr-kodov z obrazkov a ukladanie vyslednych suradnic do datasetu
+- gps_thread: cakanie na zadanie suradnic pre dalsi navigacny bod z qr-kodu
+- istro_rr2018: implementovane zastavenie robota, kym sa caka na zadanie suradnic z qr-kodu ("QRSC")
+- dorobeny skript na grepovanie najuzitocnejsich veci z logov (podla logp.cpp) - "script/logg.sh" 
+
+7.8.2018
+- qrscan: dorobene parsovanie QR-kod geo stringu parseFrameGeo()
+
+30.7.2018
+- istro_rr2018: upravy pre kompilaciu pod Ubuntu 16.04
+- qrscan: integrovana kniznica pre skenovanie QR-kodov - vytvoreny "script\install\zbar_install.sh"
+
+25.7.2018
+- rt2018: priprava na Robotour 2018, zmenene prefixy rr2018 na rt2018
+- istro_rr2018: upravy nevyhnutne pre kompilaciu s OpenCV 3.4.2 - vytvoreny "script\install\opencv3_install.sh"
+- CMakeLists.txt: zmeneny CMAKE_CXX_COMPILER z "g++-5" na "g++", lebo na raspberry mi to nekompilovalo
+
+10.5.2018
+- navig: vytvorenie navigacnych bodov pre park na Robotem Rovne v Pisku
+- istro_rr2018: camera thread: osetrena chyba, ze ak nenacita frame z kamery, tak sa neukonci thread
+- istro_rr2018: zakomentovane velocity_high (nefungovalo)
+- istro_rr2018: zakomentovane nastavovanie thresholdov ultrazvukov - vyzera, ze fungovalo
+
+8.5.2018
+- lidar: do system.h doplneny prepinac ISTRO_LIDAR_FILTERSUN, je mozne vypnut iba v pripade zamraceneho pocasia
+- istro_rr2018: zatial ponechany test s nastavovanim thresholdov ultrazvukov: "ctrlBoard.setXX4/5"
+- istro_rr2018: experimentalne pridany velocity_high - ak moc dlho ide smerom na navigacny bod bez prekazok
+
+27.4.2018
+- rr2018: priprava na Robotem Rovne 2018, zmenene prefixy rt2017 na rr2018
+- navig: doplnenych 8 zakladnych bodov z Parku Andreja Hlinku v Bratislave
+
+1.11.2017
+- doplnena kontrola vzdialenosti od navigacneho bodu do wrongway_check() - neotacaj sa v blizkosti
+
 15.9.2017
 - implementovane nove ControlBoard stavy OBSTF/B/A
 - upravene navigacne body na zaklade aktualizacie OSM map od JECC

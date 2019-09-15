@@ -62,7 +62,9 @@ int Threads::init(void *data1, void *data2, void *data3, void *data4, void *data
     thdata[thdata_len].state = THDATA_STATE_NEW;
     thdata[thdata_len++].data = data13;
 
-    printState(THDATA_STATE_NEW);
+    char str[THDATA_NUM + 1];
+    getState(str);
+    printState(THDATA_STATE_NEW, str);
     
     if (pthread_mutex_init(&thdata_mtx, NULL) != 0) {
         LOGM_ERROR(loggerThreads, "init", "error creating thdata mutex!");
@@ -177,6 +179,7 @@ int Threads::stop(void)
 
 void *Threads::getData(/*int type,*/ int state, int state_new)
 {
+    //int cnt = 0;
     int idx = -1;
     while (idx < 0) {
 
@@ -189,13 +192,20 @@ void *Threads::getData(/*int type,*/ int state, int state_new)
                 break;
             }
         }
+
         // set new state
+        char str[THDATA_NUM + 1];
         if (idx >= 0) {
+            // if ((state == THDATA_STATE_SHARED) /*&& (cnt > 0)*/) { LOGM_TRACE(loggerThreads, "getData", "state=" << state << ", cnt=" << cnt); }
             thdata[idx].state = state_new;
-            printState(state_new);
+            getState(str);
         }
         
         dataUnlock();
+
+        if (idx >= 0) {
+            printState(state_new, str);
+        }
 
         if (idx < 0) {
             if (thread_testcancel()) {
@@ -204,6 +214,7 @@ void *Threads::getData(/*int type,*/ int state, int state_new)
             } else {
                 // no data found in requested state - busy wait 
                 msleep(2);
+                //cnt++;
             }
         }
     }
@@ -225,12 +236,17 @@ void *Threads::checkData(/*int type,*/ int state, int state_new)
         }
     }
     // set new state
+    char str[THDATA_NUM + 1];
     if (idx >= 0) {
         thdata[idx].state = state_new;
-        printState(state_new);
+        getState(str);
     }
     
     dataUnlock();
+
+    if (idx >= 0) {
+        printState(state_new, str);
+    }
 
     if (idx < 0) {
         // dont wait - exit immediatelly and return NULL
@@ -285,19 +301,10 @@ void *Threads::getData2(int state, int state_new, void **ppdata2, int state2)   
 }
 */
 
-void Threads::printState(int state_new)
+void Threads::getState(char *str)
+// char str[THDATA_NUM + 1];
 {
-    char str[THDATA_NUM + 1];
-
-    if ((state_new == THDATA_STATE_CTRLBOARD) ||
-        (state_new == THDATA_STATE_CTRLBOARD_LOCK) ||
-        (state_new == THDATA_STATE_SHARED) ||
-        (state_new == THDATA_STATE_SHARED_LOCK)) {
-        return;
-    }
-
-
-    for(int i = 0; i < thdata_len; i++) {
+   for(int i = 0; i < thdata_len; i++) {
         if (thdata[i].state <= 9) {
             str[i] = (char)('0' + thdata[i].state);
         } else {
@@ -306,7 +313,20 @@ void Threads::printState(int state_new)
     }
 
     str[thdata_len] = 0;
+}
+
+void Threads::printState(int state_new, char *str)
+{
+#ifdef THREADS_LOG_TRACE0
+    if ((state_new == THDATA_STATE_CTRLBOARD) ||
+        (state_new == THDATA_STATE_CTRLBOARD_LOCK) ||
+        (state_new == THDATA_STATE_SHARED) ||
+        (state_new == THDATA_STATE_SHARED_LOCK)) {
+        return;
+    }
+
     LOGM_TRACE(loggerThreads, "printState", "state=[" << str << "]");    
+#endif
 }
 
 // nastavi stav datasetu na "state_new"
@@ -325,6 +345,7 @@ int  Threads::setData(void *data, int state_new, int max_cnt)
         } 
     }
 
+    char str[THDATA_NUM + 1];
     if (idx >= 0) {
         for(int i = 0; i < thdata_len; i++) {
             if (thdata[i].state == state_new) {
@@ -336,10 +357,14 @@ int  Threads::setData(void *data, int state_new, int max_cnt)
             }
         }
         thdata[idx].state = state_new;
-        printState(state_new);
+        getState(str);
     }
     
     dataUnlock();
+
+    if (idx >= 0) {
+        printState(state_new, str);
+    }
 
     if (idx < 0) {
         LOGM_ERROR(loggerThreads, "setData", "error finding thdata!");
