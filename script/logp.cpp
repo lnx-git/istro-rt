@@ -14,21 +14,31 @@ const int BUFFER_SIZE = 1024 * 1024;
 
 #ifndef WIN32
 
-const char *LOG_FNAME      = "/home/odroid/projects/istro_rt2017/out/istro_rt2017.log";
-const char *OUT_TXT_FNAME  = "/tmp/ramdisk/out/istro_rt2017_out.txt";
-const char *OUT_HTML_FNAME = "/tmp/ramdisk/out/istro_rt2017_out.html";
-const char *OUT_JSON_FNAME = "/tmp/ramdisk/out/istro_rt2017_out.json";
-const char *OUT_IMG_DNAME = "out/";
+const char *LOG_FNAME      = "/home/istrobotics/projects/istro_rt2019/out/istro_rt2019.log";
+const char *OUT_TXT_FNAME  = "/var/www/html/ramdisk/out/istro_rt2019_out.txt";
+const char *OUT_HTML_FNAME = "/var/www/html/ramdisk/out/istro_rt2019_out.html";
+const char *OUT_JSON_FNAME = "/var/www/html/ramdisk/out/istro_rt2019_out.json";
+//const char *OUT_TXT_FNAME  = "/tmp/ramdisk/out/istro_rt2019_out.txt";
+//const char *OUT_HTML_FNAME = "/tmp/ramdisk/out/istro_rt2019_out.html";
+//const char *OUT_JSON_FNAME = "/tmp/ramdisk/out/istro_rt2019_out.json";
+
+
+/* ubuntu */
+//const char *LOG_FNAME      = "/home/tf/projects/istro_rt2019/out/istro_rt2019.log";
+//const char *OUT_TXT_FNAME  = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.txt";
+//const char *OUT_HTML_FNAME = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.html";
+//const char *OUT_JSON_FNAME = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.json";
 
 #else
 
-const char *LOG_FNAME      = "D:\\private\\robot\\istrobtx\\sources\\istro_rt2017\\out\\istro_rt2017.log";
-const char *OUT_TXT_FNAME  = "D:\\private\\robot\\istrobtx\\sources\\istro_rt2017\\out\\istro_rt2017_out.txt";
-const char *OUT_HTML_FNAME = "D:\\private\\robot\\istrobtx\\sources\\istro_rt2017\\out\\istro_rt2017_out.html";
-const char *OUT_JSON_FNAME = "D:\\private\\robot\\istrobtx\\sources\\istro_rt2017\\out\\istro_rt2017_out.json";
-const char *OUT_IMG_DNAME = "out\\";
+const char *LOG_FNAME      = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019.log";
+const char *OUT_TXT_FNAME  = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.txt";
+const char *OUT_HTML_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.html";
+const char *OUT_JSON_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.json";
 
 #endif
+
+const char *OUT_IMG_DNAME = "out/";
 
 char buffer[BUFFER_SIZE + 1];
 
@@ -54,12 +64,13 @@ typedef struct {
     int   flags;
 } find_pattern_t;
 
-const int FIND_PATTERN_COUNT = 13;
-
 const int FIND_FLAGS_CAMERA_IMG = 1;
 const int FIND_FLAGS_VISION_IMG = 2;
 const int FIND_FLAGS_LIDAR_IMG  = 3;
 const int FIND_FLAGS_WMGRID_IMG = 4;
+const int FIND_FLAGS_NAVMAP_IMG = 5;
+
+const int FIND_PATTERN_COUNT = 16;
 
 find_pattern_t findPattern[FIND_PATTERN_COUNT] = 
 {
@@ -67,14 +78,17 @@ find_pattern_t findPattern[FIND_PATTERN_COUNT] =
     { "saveImage(): vision_image=", NULL, 0, FIND_FLAGS_VISION_IMG },
     { "saveImage(): lidar_image=",  NULL, 0, FIND_FLAGS_LIDAR_IMG },
     { "saveImage(): wmgrid_image=", NULL, 0, FIND_FLAGS_WMGRID_IMG },
+    { "saveImage(): navmap_image=", NULL, 0, FIND_FLAGS_NAVMAP_IMG },
     { "process_thread(): process_angle", NULL, 0, 0 },         // istro::process_thread(): process_angle("NAV_ANGLE"): 
     { "gps_writeData(): fix=", NULL, 0, 0 },                   // "gps_writeData....fix="
     { "process_readData(): process_change", NULL, 0, 0 },      // istro::process_readData(): process_change=52, gps_speed=0.021, 
     { "INFO", "calib_process", -1, 0 },                        // INFO  [process] istro::calib_process(): msg="calibration finished!", 
+    { "calib_reset", NULL, 0, 0 },                             // INFO  [process] istro::calib_reset(): msg="calibration interrupted!", reason="gps_course difference",
     { "INFO", "wrongway_check", -1, 0 },                       // INFO  [process] istro::wrongway_check(): msg="wrongway-check start!", 
     { "wrongway_process", NULL, 0, 0 },                        // istro::wrongway_process(): msg="wrongway in progress (STOP2)...!",
     { "navigation point passed", NULL, 0, 0 },                 // istro::gps_thread(): msg="navigation point passed!", pos=2, name="M4", ...
-    { "navigation_next_point", NULL, 0, 0 },                   // navig::navigation_next_point(): found!, name="M1", ...
+    { "navig::navigation", NULL, 0, 0 },                       // navig::navigation_next_point(): msg="point found!", name="M1", ...  / navig::navigation_point_get(): msg="coordinates acquired!", name="M1", ...
+    { "loadarea_process", NULL, 0, 0 },                        // istro::loadarea_process(): msg="loading area - waiting!", ... / "unloading area - waiting!" / "qrscan coordinates - waiting!"
     { "ControlBoard::write(): data=\"D", NULL, 0, 0 }          // ControlBoard::write(): data="DAf: S0 V343 A335 G999"
 };
 
@@ -249,7 +263,10 @@ int writeResult()
             } else 
             if (findPattern[i].flags == FIND_FLAGS_WMGRID_IMG) {
                 fprintf(f, "  \"wmgrid_image\": \"%s%s\",\n", OUT_IMG_DNAME, findResult[i]);            
-            } 
+            } else 
+            if (findPattern[i].flags == FIND_FLAGS_NAVMAP_IMG) {
+                fprintf(f, "  \"navmap_image\": \"%s%s\",\n", OUT_IMG_DNAME, findResult[i]);            
+            }
         }
     }
     fprintf(f, "  \"items\": [\n");
@@ -365,7 +382,7 @@ printf("read: \"error2: could not read from file!\"\n");
             fclose(fd);
             fd = NULL;
         }
-        msleep(300);
+        msleep(100);
     }
 
 //printf("end...");
