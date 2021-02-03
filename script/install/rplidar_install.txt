@@ -1,0 +1,25 @@
+17.1.2020
+
+Pre Jetson Nano sme pouzili "RPLIDAR SDK" v1.11.0, ale pri kompilacii vypisuje vela depredecated funkcii, 
+kvoli zavedeniu noveho datoveho typu pre vysledky lidar merani "rplidar_response_measurement_node_hq_t".
+Interne v SDK je funkcia convert(), ktorou by sa dal urobit prevod.
+
+
+28.6.2018
+
+1. instalacia "RPLIDAR SDK" v1.6.1 zo stranky "https://www.slamtec.com/en/Support#rplidar-a3"
+     cd /usr/local/
+     sudo mkdir rplidar
+     cd /usr/local/rplidar/
+     sudo wget http://bucket.download.slamtec.com/5a399ca373918716521c3c48680e63b6b0aaaf22/rplidar_sdk_v1.6.1.zip
+     sudo unzip rplidar_sdk_v1.6.1.zip 
+     cd /usr/local/rplidar/sdk/
+     sudo make
+     cd /usr/local/rplidar/sdk/sdk/include/
+     sudo mkdir hal
+     cd /usr/local/rplidar/sdk/sdk/include/hal/
+     sudo cp /usr/local/rplidar/sdk/sdk/src/hal/types.h .
+
+2. najnovsia verzia "RPLIDAR SDK" vyzadovala urobit tieto zmeny v "lidar.cpp":
+     - zmenit "CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT)" na "CreateDriver(DRIVER_TYPE_SERIALPORT)"
+     - zmenit "startScan()" na "startScan(0, 1)"
