@@ -1,0 +1,11 @@
+FROM tensorflow/tensorflow:1.14.0-gpu-py3-jupyter
+
+COPY requirements.txt /tmp
+WORKDIR /tmp
+
+RUN apt-get update
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN pip install --upgrade pip
+RUN pip install --default-timeout=1000 -r requirements.txt
+
+WORKDIR /tf

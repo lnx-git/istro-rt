@@ -1,0 +1,12 @@
+# road-segmentation/data/split_data.py
+click>=7.0
+opencv-python>=4.1.0.25
+# road-segmentation/run.py
+matplotlib>=3.0.3
+scikit-image>=0.15.0
+imgaug>=0.2.9
+# models
+# Keras 2.3 supports TF 2.0
+Keras~=2.2.4
+segmentation-models>=0.2.1
+larq>=0.7.0
