@@ -259,9 +259,14 @@ const int    NAVIGATION_POINT_COUNT = 51+3;
 // Sad Janka Krala - Bratislava, Slovakia
 volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
 {
-    { "*1", 17.1112223, 48.1337423 },  // F4
-    { "*2", 17.1109278, 48.1341742 },  // M9 Autonomous Area - pickup/load area
-    { "*3", 17.1113667, 48.1339829 },  // E9 Service Area
+//  { "*1", 17.1112223, 48.1337423 },  // F4
+//  { "*2", 17.1109278, 48.1341742 },  // M9 Autonomous Area - pickup/load area
+//  { "*3", 17.1113667, 48.1339829 },  // E9 Service Area
+
+    { "*1", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - pickup/load area       
+    { "*2", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - destination/unload area
+    { "*3", ANGLE_NONE, ANGLE_NONE },  // Service Area
+
     { "E1", 17.1147011, 48.1338215 },
     { "E2", 17.1139765, 48.1340145 },
     { "E3", 17.1137189, 48.1335886 },
@@ -301,7 +306,7 @@ volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
     { "V1", 17.1058988, 48.1363564 },
     { "V2", 17.1052241, 48.1362207 },
     { "V3", 17.1048977, 48.136231  },
-    { "V4", 17.1053319, 48.1357025 },
+    { "V4", 17.1055175, 48.1356564 },    // V4 posunute na krizovatku vpravo  oproti povodnemu: 17.1053319, 48.1357025
     { "S1", 17.1071721, 48.1339794 },
     { "S2", 17.1058856, 48.1345505 },
     { "S3", 17.108742,  48.1335497 },
@@ -317,6 +322,22 @@ volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
 
 #endif
 
+#ifdef ISTRO_MAP_BA_NABREZIE
+
+const int    NAVIGATION_POINT_COUNT = 3+3;
+
+// Nabrezie Dunaja - Bratislava, Slovakia
+volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
+{
+    { "*1", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - pickup/load area       
+    { "*2", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - destination/unload area
+    { "*3", ANGLE_NONE, ANGLE_NONE },  // Service Area
+    { "E1", 17.1165786, 48.1399831 },
+    { "M1", 17.1012704, 48.1396990 },
+    { "W1", 17.0749159, 48.1438339 }
+};
+
+#endif
 
 /*
 const int    NAVIGATION_POINT_COUNT = 26+3;
@@ -466,6 +487,25 @@ volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] =
     { "Z7", 12.6884226, 49.9452755 },  //  141793378
     { "Z8", 12.6962754, 49.9539515 }   //  385732524
 };
+#endif
+
+#ifdef ISTRO_MAP_KLONDAJK
+
+const int    NAVIGATION_POINT_COUNT = 3+4;
+
+// Byvala zakladna Protiletadlove raketove skupiny VEGA (Klondajk) - Dobris, Cesko
+volatile nav_point_t navigationPoint[NAVIGATION_POINT_COUNT] = 
+{
+    { "*1", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - pickup/load area       
+    { "*2", ANGLE_NONE, ANGLE_NONE },  // Autonomous Area - destination/unload area
+    { "*3", ANGLE_NONE, ANGLE_NONE },  // Service Area
+
+    { "G1", 14.1606168, 49.845089  },  // node id= 632914564
+    { "G2", 14.1628958, 49.846372  },  // node id= 3017244108
+    { "G3", 14.1721595, 49.8511216 },  // node id= 1683159910
+    { "G4", 14.1715408, 49.8542628 }   // node id= 3017244584       
+};
+
 #endif
 
 nav_point_xy_t navigationPointXY[NAVIGATION_POINT_COUNT];

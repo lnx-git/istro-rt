@@ -52,6 +52,13 @@ typedef struct {
 
 class VisionCore {
 
+private:
+    int ep_size;         // EPSIZE - velkost bloku v pixloch pre vyhodnocovanie majoritnej farby v okoli bodu - vzdy neparne
+    int ep_threshold;    // EP_THRESHOLDM - majoritna hodnota musi mat viac nez X/256 % vacsie zastupenie ako vsetky ostatne
+
+public:
+    VisionCore(int eps = -1, int ept = -1);
+
 public:
     void setKMeans(Mat& centers, int *radius, int val);
     void calcKMeans(const SamplePixels& sample, Mat& centers, Mat& labels, int *radius);
@@ -65,11 +72,18 @@ public:
     void calcMarkersIM(const Mat& markers, Mat& markersIM);
 
 //  int  calcTWeight(Mat& image, const Mat &markers, int x1, int y1, int x2, int y2, int x3, int y3);
-    void calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& markersIM, const epmask_t& epmask, Mat& epweigth, Mat& elweigth);    
-    void calcELimitAngle(const Mat& elines, const Mat& elweigth, DegreeMap& dmap);
+    void calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& markersIM, const epmask_t& epmask, Mat& epweight, Mat& elweight);    
+    void calcELimitAngle(const Mat& elines, const Mat& elweight, DegreeMap& dmap);
+
+public:
+    void applyEPWeight(Mat& epweight, Mat& elweight, const Mat& epweight2, const Mat& elweight2);
+    void applyMarkers(Mat& markers, const Mat& markers2);
 };
 
 class VisionGui: public VisionCore {
+
+public:
+    VisionGui(int eps = -1, int ept = -1) : VisionCore(eps, ept) {};
 
 private:
     void drawBGR(Mat& img, int b, int g, int r, Point3u color) ;
@@ -89,11 +103,15 @@ public:
     
     void drawEPoints(Mat& image, const Mat& epoints);
     void drawEPLine(Mat& image, const Mat& epoints, int el, int ep1, int ep2, const Scalar& color, const int width);
-    void drawEPWeight(Mat& image, const Mat& epoints, const Mat& epdist, const Mat& elines, const Mat& epweigth, const Mat& elweigth, const int& angle_min, const int& angle_max);
+    void drawEPWeight(Mat& image, const Mat& epoints, const Mat& epdist, const Mat& elines, const Mat& epweight, const Mat& elweight, const int& angle_min, const int& angle_max);
     void drawEPMask(Mat& image, const Mat& epoints, const epmask_t& epmask);
 };
 
 class Vision: public VisionGui {
+
+public:
+    Vision(int eps = -1, int ept = -1) : VisionGui(eps, ept) {};
+
 public:
     // not changed during evaluation
     Mat clusterCenters1, clusterCenters2;
@@ -112,8 +130,8 @@ public:
     //Mat markersIM;
 
     /* int tweight[5]; */
-    //Mat epweigth;
-    //Mat elweigth;
+    //Mat epweight;
+    //Mat elweight;
     
     //int eangle_min;
     //int eangle_max;
@@ -121,9 +139,9 @@ public:
 public:
     int init(SamplePixels &sampleOnRoad, SamplePixels &sampleOffRoad);
 
-    int eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, DegreeMap& dmap);
+    int eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweight, Mat& elweight, DegreeMap& dmap);
     
-    void drawOutput(const Mat &image, Mat &out, const Mat& markers, const Mat& epweigth, const Mat& elweigth, const int& angle_min, const int& angle_max);
+    void drawOutput(const Mat &image, Mat &out, const Mat& markers, const Mat& epweight, const Mat& elweight, const int& angle_min, const int& angle_max);
 };
 
 #endif

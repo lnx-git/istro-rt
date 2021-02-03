@@ -18,7 +18,7 @@ LOG_DEFINE(loggerNavMap, "navmap");
 int navmap_node_cnt = 0;
 int navmap_segment_cnt = 0;
 
-const int NAVMAP_NODE_NUM = 5000;
+const int NAVMAP_NODE_NUM = 45000;
 const int NAVMAP_SEGMENT_NUM  = 4000;
 
 navmap_node_t navMapNode[NAVMAP_NODE_NUM];
@@ -607,7 +607,7 @@ int navmap_load_osmway(xmlNode * root_node, long long way_id)
                 (xmlStrcmp(vStr, (const xmlChar *) "track") == 0)) {
                 accept_way = 2;
             }
-            // accept also 'highway=service' (ISTRO_MAP_BA_FEISTU)
+            // accept also 'highway=service' (ISTRO_MAP_BA_FEISTU, ISTRO_MAP_KLONDAJK)
             if ((xmlStrcmp(kStr, (const xmlChar *) "highway") == 0) && 
                 (xmlStrcmp(vStr, (const xmlChar *) "service") == 0)) {
                 accept_way = 3;
@@ -625,6 +625,22 @@ int navmap_load_osmway(xmlNode * root_node, long long way_id)
             // pre RoboOrienteering aj hranice parku dame do mapy <tag k='landuse' v='greenfield'/>
             if ((xmlStrcmp(kStr, (const xmlChar *) "landuse") == 0) && 
                 (xmlStrcmp(vStr, (const xmlChar *) "greenfield") == 0)) {
+                accept_way = 1;
+            }
+#endif 
+#if defined(ISTRO_MAP_BA_NABREZIE) || defined(ISTRO_MAP_KLONDAJK)
+            if ((xmlStrcmp(kStr, (const xmlChar *) "highway") == 0) && 
+                (xmlStrcmp(vStr, (const xmlChar *) "path") == 0)) {
+                accept_way = 1;
+            }
+#endif 
+#ifdef ISTRO_MAP_BA_NABREZIE
+            if ((xmlStrcmp(kStr, (const xmlChar *) "highway") == 0) && 
+                (xmlStrcmp(vStr, (const xmlChar *) "pedestrian") == 0)) {
+                accept_way = 1;
+            }
+            if ((xmlStrcmp(kStr, (const xmlChar *) "highway") == 0) && 
+                (xmlStrcmp(vStr, (const xmlChar *) "cycleway") == 0)) {
                 accept_way = 1;
             }
 #endif 
@@ -1238,6 +1254,18 @@ void navmap_test(void)
     navmap_load("conf/navmap-ba-sadjk.osm");
     navmap_export_kml("out/navmap-ba-sadjk.kml");
     navmap_export_data("out/navmap-ba-sadjk.cpp");
+#endif
+
+#ifdef ISTRO_MAP_BA_NABREZIE
+    navmap_load("conf/navmap-ba-nabrezie.osm");
+    navmap_export_kml("out/navmap-ba-nabrezie.kml");
+    navmap_export_data("out/navmap-ba-nabrezie.cpp");
+#endif
+
+#ifdef ISTRO_MAP_KLONDAJK
+    navmap_load("conf/navmap-klondajk.osm");
+    navmap_export_kml("out/navmap-klondajk.kml");
+    navmap_export_data("out/navmap-klondajk.cpp");
 #endif
 }
 

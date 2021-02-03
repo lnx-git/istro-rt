@@ -795,7 +795,7 @@ void WorldModel::saveImage(long image_number, const string& str, const Mat& img)
 
     if (!img.empty()) {
         double t = timeBegin();
-        sprintf(filename, "%srt2019_%07u_%07u_%s", outputDir.c_str(), (unsigned int)save_rand, (unsigned int)(image_number<0?999999:image_number), str.c_str());
+        sprintf(filename, "%srt2020_%07u_%07u_%s", outputDir.c_str(), (unsigned int)save_rand, (unsigned int)(image_number<0?999999:image_number), str.c_str());
         imwrite(filename, img);
         sprintf(filename, "WorldModel::saveImage('%s')", str.c_str());
         timeEnd(filename, t);

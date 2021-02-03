@@ -47,9 +47,27 @@ static void onMouse(int event, int x, int y, int flags, void*)
 
 const int VISION_BLACKMODE_V = 0;
 
+VisionCore::VisionCore(int eps, int ept)
+{
+    if (eps >= 0) {
+        ep_size = eps;
+    } else {
+        ep_size = EPSIZE;
+    }
+
+    if (ept >= 0) {
+        ep_threshold = ept;
+    } else {
+        ep_threshold = EP_THRESHOLDM;
+    }
+}
+
+
 void VisionCore::setKMeans(Mat& centers, int *radius, int val) 
 // nastavi centers a radius na vsetky mozne hodnoty HSV (val=1) alebo na "cierne" hodnoty HSV (val=0)
 {
+    LOGM_INFO(loggerVCore, "setKMeans", "ep_size=" << ep_size << ", ep_threshold=" << ep_threshold);
+
     if (!centers.empty()) {
         centers.release();
     }
@@ -90,6 +108,8 @@ void VisionCore::calcKMeans(const SamplePixels& sample, Mat& centers, Mat& label
     Mat hist1(CLUSTER_COUNT, 256, CV_32SC1);
     Mat hist2(CLUSTER_COUNT, 256, CV_32SC1);
     Mat hist3(CLUSTER_COUNT, 256, CV_32SC1);
+
+    LOGM_INFO(loggerVCore, "calcKMeans", "ep_size=" << ep_size << ", ep_threshold=" << ep_threshold);
 
     if (!centers.empty()) {
         centers.release();
@@ -508,27 +528,29 @@ int VisionCore::calcTWeight(Mat& image, const Mat &markers, int x1, int y1, int 
 }
 */
 
-/* calculate event points and event lines weigths */
+/* calculate event points and event lines weights */
 /* epweight obsahuje pre kazdy bod jednu z hodnot 1/2/0/4/255, podla toho, co prevazuje v hodnotach markers (255 = ziadna hodnota neprekrocila threshold) */
 /* elweight pre kazdu ciaru obsahuje dlzku, ktora zodpoveda poslednemu pointu s hodnotou 1 (onroad) */
-void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& markersIM, const epmask_t& epmask, Mat& epweigth, Mat& elweigth)
+void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& markersIM, const epmask_t& epmask, Mat& epweight, Mat& elweight)
 {
     int rows = markersIM.rows;
     int cols = markersIM.cols;
     
     double t = timeBegin();
     
-    epweigth.create(epoints.size(), CV_8UC1);
-    elweigth.create(ELINES_COUNT, 1, CV_32FC1);
+    epweight.create(epoints.size(), CV_8UC1);
+    elweight.create(ELINES_COUNT, 1, CV_32FC1);
+
+    int ep_size2 = (ep_size - 1)/2;    // (EPSIZE - 1)/2;
     
-    // 1. vypocitame epweigth pre vsetky body, ktore su enabled
+    // 1. vypocitame epweight pre vsetky body, ktore su enabled
     for(int i = 0; i < ELINES_COUNT; i++) {
         for(int j = 0; j < EPOINTS_COUNT; j++) {
             Point p = epoints.at<Point>(i, j);
             
             if ((p.x < 0) && (p.y < 0)) {
                 // point is outside image
-                epweigth.at<uchar>(i, j) = 255;
+                epweight.at<uchar>(i, j) = 255;
                 continue;
             }
             
@@ -536,14 +558,14 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
 //            if (!epmask.m[i][j].enabled && (epmask.m[i][j].near_l >= 0) && (epmask.m[i][j].near_p >= 0)) {
 //                printf("VisionCore::calcEPWeight: epmask.m[%d][%d] ignore\n", i, j);
 //                // bod je disabled - docasne tam dame 255, potom prepiseme podla najblizsieho
-//                epweigth.at<uchar>(i, j) = 255;
+//                epweight.at<uchar>(i, j) = 255;
 //                continue;
 //            }
             
-            int x1 = p.x - (EPSIZE - 1)/2;
-            int y1 = p.y - (EPSIZE - 1)/2;
-            int x2 = p.x + (EPSIZE - 1)/2;
-            int y2 = p.y + (EPSIZE - 1)/2;
+            int x1 = p.x - ep_size2;
+            int y1 = p.y - ep_size2;
+            int x2 = p.x + ep_size2;
+            int y2 = p.y + ep_size2;
             
             if (x1 < 0) {
                 x2 += -x1;
@@ -572,11 +594,11 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
             int cnt2 = vD[2] + vA[2] - vB[2] - vC[2];
             int cnt4 = vD[3] + vA[3] - vB[3] - vC[3];
             
-            int cnt0t = cnt0 * EP_THRESHOLDM / 256;
-            int cnt1t = cnt1 * EP_THRESHOLDM / 256;
-            int cnt2t = cnt2 * EP_THRESHOLDM / 256;
-            int cnt4t = cnt4 * EP_THRESHOLDM / 256;
-            
+            int cnt0t = (cnt0 * ep_threshold) >> 8;    // EP_THRESHOLDM / 256;
+            int cnt1t = (cnt1 * ep_threshold) >> 8;    // EP_THRESHOLDM / 256;
+            int cnt2t = (cnt2 * ep_threshold) >> 8;    // EP_THRESHOLDM / 256;
+            int cnt4t = (cnt4 * ep_threshold) >> 8;    // EP_THRESHOLDM / 256;
+
             uchar u;
             if ((cnt1 >= cnt2t) && (cnt1 >= cnt0t) && (cnt1 >= cnt4t)) {
                 u = 1;
@@ -592,11 +614,17 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
             } else {
                 u = 255;
             }
-            epweigth.at<uchar>(i, j) = u;
+            epweight.at<uchar>(i, j) = u;
+
+            //if ((ep_size == 11) && (cnt0 >= 10)) {
+            //LOGM_DEBUG(loggerVCore, "calcEPWeight", "i=" << i << ", j=" << j << ", p.x=" << p.x << ", p.y=" << p.y 
+            //  << ", u=" << (int)u << ", cnt1=" << cnt1 << ", cnt1t=" << cnt1t << ", cnt2=" << cnt2 << ", cnt2t=" << cnt2t
+            //  << ", cnt4=" << cnt4 << ", cnt4t=" << cnt4t << ", cnt0=" << cnt0 << ", cnt0t=" << cnt0t);
+            //}
         }
     }
     
-    // 2. naplnime epweigth pre vsetky body, ktore su disabled, podla najblizsieho
+    // 2. naplnime epweight pre vsetky body, ktore su disabled, podla najblizsieho
     for(int i = 0; i < ELINES_COUNT; i++) {
         for(int j = 0; j < EPOINTS_COUNT; j++) {
             if (epmask.m[i][j].enabled) continue;
@@ -604,8 +632,8 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
             epmask_data_t m = epmask.m[i][j];
             if ((m.near_l < 0) || (m.near_p < 0)) continue;
             
-            epweigth.at<uchar>(i, j) = epweigth.at<uchar>(m.near_l, m.near_p);
-            //printf("VisionCore::calcEPWeight: epweigth[%d][%d]=%d\n", i, j, epweigth.at<uchar>(m.near_l, m.near_p));
+            epweight.at<uchar>(i, j) = epweight.at<uchar>(m.near_l, m.near_p);
+            //printf("VisionCore::calcEPWeight: epweight[%d][%d]=%d\n", i, j, epweight.at<uchar>(m.near_l, m.near_p));
         }
     }
 
@@ -623,7 +651,7 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
                 continue;
             }
 
-            uchar u = epweigth.at<uchar>(i, j);
+            uchar u = epweight.at<uchar>(i, j);
          
 #ifdef ISTRO_VISION_ORANGECONE
             /* pri kuzeloch hladame prvy bod, ktory bude mat oranzovu farbu */
@@ -641,41 +669,83 @@ void VisionCore::calcEPWeight(const Mat& epoints, const Mat& epdist, const Mat& 
         }
         if (first2 == 0) {
             // uz prvy point ma inu hodnotu ako 1
-            elweigth.at<float>(i) = 0.0;
+            elweight.at<float>(i) = 0.0;
         } else 
         if (first2 < 0) {
             // vsetky pointy maju hodnotu 1
-            elweigth.at<float>(i) = epdist.at<float>(EPOINTS_COUNT - 1);
+            elweight.at<float>(i) = epdist.at<float>(EPOINTS_COUNT - 1);
         } else {
             // point s indexom "first2" je prvy point s hodnotou inou ako 1, takze vzdialenost je totozna so vzdialenostou k predchadzajucemu bodu
-            elweigth.at<float>(i) = epdist.at<float>(first2 - 1);
+            elweight.at<float>(i) = epdist.at<float>(first2 - 1);
         }
-        //printf("calcEPWeight[%d]: first2=%d, elweigth=%d\n", i, first2, (int)round(elweigth.at<float>(i)));
+        //printf("calcEPWeight[%d]: first2=%d, elweight=%d\n", i, first2, (int)round(elweight.at<float>(i)));
     }
     
     timeEnd("VisionCore::calcEPWeight", t);
     
     /*int i = 0;
     for(; i < ELINES_COUNT - 4; i += 4) {
-        printf("calcEPWeight: elweigth[%2d]=%3d, elweigth[%2d]=%3d, elweigth[%2d]=%3d, elweigth[%2d]=%3d\n", i, (int)round(elweigth.at<float>(i)),
-            i+1, (int)round(elweigth.at<float>(i+1)), i+2, (int)round(elweigth.at<float>(i+2)), i+3, (int)round(elweigth.at<float>(i+3)));
+        printf("calcEPWeight: elweight[%2d]=%3d, elweight[%2d]=%3d, elweight[%2d]=%3d, elweight[%2d]=%3d\n", i, (int)round(elweight.at<float>(i)),
+            i+1, (int)round(elweight.at<float>(i+1)), i+2, (int)round(elweight.at<float>(i+2)), i+3, (int)round(elweight.at<float>(i+3)));
     }
     for(; i < ELINES_COUNT; i++) {
-        printf("calcEPWeight: elweigth[%2d]=%3d\n", i, (int)round(elweigth.at<float>(i)));
+        printf("calcEPWeight: elweight[%2d]=%3d\n", i, (int)round(elweight.at<float>(i)));
     }*/    
 }
 
-void VisionCore::calcELimitAngle(const Mat& elines, const Mat& elweigth, DegreeMap& dmap)
+void VisionCore::applyEPWeight(Mat& epweight, Mat& elweight, const Mat& epweight2, const Mat& elweight2)
+/* aplikuj hodnoty z ineho obrazka do aktualneho => ak v druhom je prekazka, tak uprav aj prvy */
+{
+    for(int i = 0; i < ELINES_COUNT; i++) {
+        for(int j = 0; j < EPOINTS_COUNT; j++) {
+            /* najvacsiu prioritu ma, ak epweight2[] nema hodnotu 1 */
+            if ((epweight.at<uchar>(i, j) == 1) && (epweight2.at<uchar>(i, j) != 1)) {
+                epweight.at<uchar>(i, j) = epweight2.at<uchar>(i, j);
+            }
+        }
+    }
+    
+    // prepocitame vsetky elweight
+    for(int i = 0; i < ELINES_COUNT; i++) {
+        if (elweight2.at<float>(i) < elweight.at<float>(i)) {
+            elweight.at<float>(i) = elweight2.at<float>(i);
+        }
+    }
+}
+
+void VisionCore::applyMarkers(Mat& markers, const Mat& markers2)
+{
+    int rows = markers.rows;
+    int cols = markers.cols;
+
+    uchar *p_markers;
+    const uchar *p_markers2;
+
+    for(int y = 0; y < rows; y++) {
+        p_markers = markers.ptr<uchar>(y);
+        p_markers2 = markers2.ptr<uchar>(y);
+
+        for(int x = 0; x < cols; x++) {
+            if (*(p_markers2++) != 1) {
+                *(p_markers++) = 4;
+            } else {
+                p_markers++;
+            }
+        }
+    }
+}
+
+void VisionCore::calcELimitAngle(const Mat& elines, const Mat& elweight, DegreeMap& dmap)
 {    
     dmap.init();
     float dd = 1;
     for(int i = 0; i < ELINES_COUNT; i++) {
         float angle1 = elines.at<Vec3f>(i)[ELINES_ANGLE_IDX];
-        int val = (elweigth.at<float>(i) + 0.001) >= elines.at<Vec3f>(i)[ELINES_LIMIT_IDX];
+        int val = (elweight.at<float>(i) + 0.001) >= elines.at<Vec3f>(i)[ELINES_LIMIT_IDX];
         int dist = -1;
         int maxd = (int)(elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]);  // max detectable distance (centimetres -> centimetres)
-        if ((elweigth.at<float>(i) + 0.001) <= elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]) {
-            dist = (int)(elweigth.at<float>(i));    // obstacle is detected 
+        if ((elweight.at<float>(i) + 0.001) <= elines.at<Vec3f>(i)[ELINES_MAXDIST_IDX]) {
+            dist = (int)(elweight.at<float>(i));    // obstacle is detected 
         }  
         // assert: if (val == 0) => (dist > 0)
         // for the last one we use old value of dd
@@ -821,8 +891,6 @@ void VisionCore::transformEPXY(int xp, int yp, int &xp2, int &yp2)
     //LOGM_DEBUG(loggerVCore, "transformEPXY", "xp=" << xp << ", yp=" << yp  << ", xp2=" << xp2 << ", yp2=" << yp2<< ", dyp=" << (yp2 - yp));
 }
 
-//const float VISION_TRNF_ANG1 = 67.5;
-//const float VISION_TRNF_ANG2 = 45.0;
 const float VISION_TRNF_ANG1 = 60.0;
 const float VISION_TRNF_ANG2 = 40.0;
 const float VISION_TRNF_ANG3 = 80.0;
@@ -857,46 +925,51 @@ void VisionCore::transformEPAngle(float angle, float &angle2)
 
     LOGM_DEBUG(loggerVCore, "transformEPAngle", "angle=" << ioff(angle, 2) << ", angle2=" << ioff(angle2, 2));
 }
- 
+#endif
+
+#ifdef ISTRO_VISION_HDVIEW
+
+typedef struct { 
+    int xp;   // 
+    int yp;   // 
+    int dxp;  // 
+} vision_epc_t;  
+
 /*
-void VisionCore::transformEPAngle(float angle, float &angle2) 
-// cielom transformacie je zvacsit uhly leziace blizsie k priamemu smeru (odchylka 30 stupnov -> 50 stupnov)  
-// 0 -> 0, ANG1 -> ANG2,  90 -> 90
+const int VISION_EPCORR_COUNT = 9;
+
+// korekcne body pre zjednodusenu transformaciu typu "hd-view" 16:9 -> 4:3  - nepouzivaju sa
+const vision_epc_t visionEPCorr[VISION_EPCORR_COUNT] = 
+{ 
+    { 0,     0,  80 },
+    { 320,   0,   0 },
+    { 639,   0,	-80 },
+    { 0,   240,  80 },
+    { 320, 240,   0 },
+    { 639, 240,	-80 },
+    { 0,   479,  80 },
+    { 320, 479,   0 },
+    { 639, 479, -80 }
+};
+*/
+
+void VisionCore::transformEPXY(int xp, int yp, int &xp2, int &yp2) 
 {
-    float x, x2;
+    double d = xp - 320;
+    
+    xp2 = round(320 + d * 640 / 848);    // 848:480 -> 640:480
+    yp2 = yp;
 
-    if (angle >= 90.0) {
-        x = 180 - angle;
-    } else {
-        x = angle;
-    }
-
-    if (x <= VISION_TRNF_ANG1) {
-        x2 = VISION_TRNF_ANG2 * x / VISION_TRNF_ANG1;
-    } else {
-        x2 = (90.0 - VISION_TRNF_ANG2) * (x - VISION_TRNF_ANG1) / (90.0 - VISION_TRNF_ANG1) + VISION_TRNF_ANG2;
-    } 
-
-    if (angle >= 90.0) {
-        angle2 = 180 - x2;
-    } else {
-        angle2 = x2;
-    }
-
-    LOGM_DEBUG(loggerVCore, "transformEPAngle", "angle=" << ioff(angle, 2) << ", angle2=" << ioff(angle2, 2));
+    //LOGM_DEBUG(loggerVCore, "transformEPXY", "xp=" << xp << ", yp=" << yp  << ", xp2=" << xp2 << ", yp2=" << yp2<< ", dxp=" << (xp2 - xp));
 }
-*/
 
-/*
-    if (angle >= 90.0) {
-        angle2 = sqrt((angle - 90.0) / 90.0) * 90.0 + 90.0;
-    } else {
-        angle2 = 90.0 - sqrt((90.0 - angle) / 90.0) * 90.0;
-    }
-*/
+void VisionCore::transformEPAngle(float angle, float &angle2) 
+{
+    angle2 = angle;
+}
+#endif
 
-
-#else
+#if !defined(ISTRO_VISION_FISHEYE) && !defined(ISTRO_VISION_HDVIEW)
 
 void VisionCore::transformEPXY(int xp, int yp, int &xp2, int &yp2) 
 {
@@ -996,7 +1069,7 @@ int VisionCore::loadEPMask(const Mat& epoints, const string &fileName, epmask_t 
     image = imread(fileName, 1);        
     
     if (!image.data) {
-        LOGM_ERROR(loggerVCore, "loadEPMask", "no mask data!");
+        LOGM_ERROR(loggerVCore, "loadEPMask", "msg=\"no mask data!\"");
         return -1;    // error: file not found
     }
 
@@ -1335,10 +1408,10 @@ void VisionGui::drawEPLine(Mat& image, const Mat& epoints, int el, int ep1, int 
     }
 }
 
-void VisionGui::drawEPWeight(Mat& image, const Mat& epoints, const Mat& epdist, const Mat& elines, const Mat& epweigth, const Mat& elweigth, const int& angle_min, const int& angle_max)
+void VisionGui::drawEPWeight(Mat& image, const Mat& epoints, const Mat& epdist, const Mat& elines, const Mat& epweight, const Mat& elweight, const int& angle_min, const int& angle_max)
 {   
     for(int i = 0; i < ELINES_COUNT; i++) {       
-        float w = elweigth.at<float>(i);
+        float w = elweight.at<float>(i);
         float wl = elines.at<Vec3f>(i)[ELINES_LIMIT_IDX];
         int k = EPOINTS_COUNT;    // index prveho bodu, ktory ma vzdialenost vacsiu ako hodnota pre danu ciaru
         int kl = EPOINTS_COUNT;    // index posledneho bodu, ktory ma vzdialenost mensiu ako limit (na detekciu prekazky) pre danu ciaru
@@ -1473,13 +1546,14 @@ int Vision::init(SamplePixels &sampleOnRoad, SamplePixels &sampleOffRoad)
     return res;    
 }
 
-int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& elweigth, DegreeMap& dmap)
+int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweight, Mat& elweight, DegreeMap& dmap)
 //int Vision::eval(Mat &image, int& angle_min, int& angle_max) 
 {    
     double t = timeBegin();    
 
     if ( !image.data ) {
-        LOGM_ERROR(loggerVision, "eval", "no image data!");
+        dmap.init();
+        LOGM_ERROR(loggerVision, "eval", "msg=\"no image data!\"");
         return -1;
     }
     
@@ -1498,8 +1572,8 @@ int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& e
     printf("calcTWeight() = (%d, %d, %d, %d, %d)\n", tweight[0], tweight[1], tweight[2], tweight[3], tweight[4]);
 */
 
-    calcEPWeight(epoints, epdist, markersIM, epmask, epweigth, elweigth);
-    calcELimitAngle(elines, elweigth, dmap);
+    calcEPWeight(epoints, epdist, markersIM, epmask, epweight, elweight);
+    calcELimitAngle(elines, elweight, dmap);
     
 //  angle_min = eangle_min; 
 //  angle_max = eangle_max; 
@@ -1509,7 +1583,7 @@ int Vision::eval(Mat &image, Mat& markers, Mat& markersIM, Mat& epweigth, Mat& e
     return 0;
 }
 
-void Vision::drawOutput(const Mat &image, Mat &out, const Mat& markers, const Mat& epweigth, const Mat& elweigth, const int& angle_min, const int& angle_max)
+void Vision::drawOutput(const Mat &image, Mat &out, const Mat& markers, const Mat& epweight, const Mat& elweight, const int& angle_min, const int& angle_max)
 //void Vision::drawOutput(const Mat &image, Mat &out)
 {
     Mat imageTmp, imageGray;
@@ -1521,7 +1595,7 @@ void Vision::drawOutput(const Mat &image, Mat &out, const Mat& markers, const Ma
 
     drawMarkers(out, markers, imageGray);
     
-    drawEPWeight(out, epoints, epdist, elines, epweigth, elweigth, angle_min, angle_max);
+    drawEPWeight(out, epoints, epdist, elines, epweight, elweight, angle_min, angle_max);
     drawEPoints(out, epoints);
     drawEPMask(out, epoints, epmask);
     

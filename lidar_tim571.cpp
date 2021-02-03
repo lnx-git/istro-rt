@@ -14,20 +14,35 @@ const float LIDAR_DISTANCE_STOP      =  50;    // minimum distance that will sto
 const float LIDAR_DISTANCE_MAX       = 300;    // maximum distince where obstacles could be detected (required also for DegreeMap)
 const float LIDAR_DISTANCE_MAXD      = 300;    // maximum distance - only for drawing purposes
 
-const int   LIDAR_QUALITY_MIN        =   1;    // ignore lidar data if quality is low (<1)
-#ifndef ISTRO_LIDAR_FILTERSUN
-const int   LIDAR_QUALITY_DMAP       =   2;    // ignore obstacles (to filter sun reflection) if quality is below (2=ignore, no filter)
-const int   LIDAR_QUALITY_STOP       =   3;    // ignore stop condition (to filter sun reflection) if quality is below (3=ignore, no filter)
+#ifdef ISTRO_LIDAR_TIM571
+
+const int   LIDAR_QUALITY_MIN        =    1;    // ignore lidar data if quality is low (<1)
+const int   LIDAR_QUALITY_DMAP       =    2;    // ignore obstacles (to filter sun reflection) if quality is below (2=ignore, no filter)
+const int   LIDAR_QUALITY_STOP       =    3;    // ignore stop condition (to filter sun reflection) if quality is below (3=ignore, no filter)
+const int   LIDAR_QUALITY_MAX        =  250;    // ??ignore lidar data if quality is too high - car reflector, direct sun (>=250)
+const int   LIDAR_QUALITY_MAXD       =  260;    // maximum quality - only for drawing purposes
+
+const int   LIDAR_STOP_COUNT         =    8;    // number of angles where the distance must be exceeded
+
 #else
-const int   LIDAR_QUALITY_DMAP       =  13;    // ignore obstacles (to filter sun reflection) if quality is below (<13)
-const int   LIDAR_QUALITY_STOP       =  20;    // ignore stop condition (to filter sun reflection) if quality is below (<20)
+
+const int   LIDAR_QUALITY_MIN        =    1;    // ignore lidar data if quality is low (<1)
+#ifndef ISTRO_LIDAR_FILTERSUN
+const int   LIDAR_QUALITY_DMAP       =    2;    // ignore obstacles (to filter sun reflection) if quality is below (2=ignore, no filter)
+const int   LIDAR_QUALITY_STOP       =    3;    // ignore stop condition (to filter sun reflection) if quality is below (3=ignore, no filter)
+#else
+const int   LIDAR_QUALITY_DMAP       =   13;    // ignore obstacles (to filter sun reflection) if quality is below (<13)
+const int   LIDAR_QUALITY_STOP       =   20;    // ignore stop condition (to filter sun reflection) if quality is below (<20)
 #endif
-const int   LIDAR_QUALITY_MAX        =  45;    // ignore lidar data if quality is too high - car reflector, direct sun (>=45)
-const int   LIDAR_QUALITY_MAXD       =  60;    // maximum quality - only for drawing purposes
+const int   LIDAR_QUALITY_MAX        =   45;    // ignore lidar data if quality is too high - car reflector, direct sun (>=45)
+const int   LIDAR_QUALITY_MAXD       =   60;    // maximum quality - only for drawing purposes
+
+const int   LIDAR_STOP_COUNT         =    3;    // number of angles where the distance must be exceeded
+
+#endif
 
 const float LIDAR_STOP_ANGLE_MIN     =  45;    // minimum angle where distance is checked
 const float LIDAR_STOP_ANGLE_MAX     = 135;    // maximum angle where distance is checked
-const int   LIDAR_STOP_COUNT         =   3;    // number of angles where the distance must be exceeded
 
 #ifndef WIN32
 const string outputFName = "out/lidar.json";
@@ -37,53 +52,81 @@ const string outputFName = "out\\lidar.json";
 
 LOG_DEFINE(loggerLidar, "Lidar");
 
-#ifdef ISTRO_RPLIDAR
+#ifdef ISTRO_LIDAR_TIM571
 
-int Lidar::init(const char *portName)
+/* sockets */
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
+#define STX 2
+#define ETX 3
+
+int Lidar::connect_tim571()
 {
-    const char * opt_com_path = portName;
-    _u32         opt_com_baudrate = 115200;
+	LOGM_INFO(loggerLidar, "connect_tim571", "msg=\"connecting...\"");  // fixme TIM571_ADDR, TIM571_PORT
 
-#ifdef ISTRO_RPLIDAR_V106
-    drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
-#else
-    drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
-#endif
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (!drv) {
-        LOGM_ERROR(loggerLidar, "init", "insufficent memory!");
+    if (sockfd < 0) {
+    	LOGM_ERROR(loggerLidar, "connect_tim571", "msg=\"error: cannot open tim571 socket!\"");
         return -1;
     }
 
-    // make connection...
-    if (IS_FAIL(drv->connect(opt_com_path, opt_com_baudrate))) {
-        LOGM_ERROR(loggerLidar, "init", "cannot bind to serial port \"" << opt_com_path << "\"");
-        RPlidarDriver::DisposeDriver(drv);
+    struct sockaddr_in remoteaddr;
+    remoteaddr.sin_family = AF_INET;
+    remoteaddr.sin_addr.s_addr = inet_addr(TIM571_ADDR);
+    remoteaddr.sin_port = htons(TIM571_PORT);
+
+    if (connect(sockfd, (struct sockaddr*)&remoteaddr, sizeof(remoteaddr)) < 0)
+    {
+    	LOGM_ERROR(loggerLidar, "connect_tim571", "msg=\"error: connecting tim571 socket!\"");
         return -2;
     }
 
-    // check health...
-    if (!checkHealth()) {
-        LOGM_ERROR(loggerLidar, "init", "checkHealth failed!");
-        RPlidarDriver::DisposeDriver(drv);
+	LOGM_INFO(loggerLidar, "connect_tim571", "msg=\"tim571 connected\"");
+    return 0;
+}
+
+int Lidar::init_tim571()
+{   
+    program_runs = 1;
+    online = 1;
+
+    tim571_data = (uint16_t *) malloc(sizeof(uint16_t) * TIM571_DATA_COUNT);
+    tim571_rssi_data = (uint8_t *) malloc(sizeof(uint8_t) * TIM571_DATA_COUNT);
+    tim571_error = 0;
+    tim571_telegram_counter = 0;
+
+    if ((tim571_data == NULL) || (tim571_rssi_data == NULL))
+    {
+        LOGM_ERROR(loggerLidar, "init_tim571()", "msg=\"error: insufficient memory!\"");
+        return -1;
+    }
+    if (connect_tim571() < 0)
+    {
+        LOGM_ERROR(loggerLidar, "init_tim571()", "msg=\"error: connect_tim571() failed!\"");
+        return -2;   
+    }
+
+    if (send_start_measurement() < 0) {
         return -3;
     }
-
-    drv->startMotor();
-
-    // start scan...
-    u_result op_result;
-#ifdef ISTRO_RPLIDAR_V106
-    op_result = drv->startScan(0, 1);
-#else
-    op_result = drv->startScan();
-#endif
-    if (IS_FAIL(op_result)) {
-        LOGM_ERROR(loggerLidar, "init", "start scan failed!, res=" << (int)op_result);
-        RPlidarDriver::DisposeDriver(drv);
+    if (read_sentence(1) < 0) {
         return -4;
     }
+    return 0;
+}
 
+int Lidar::init(const char *portName) 
+{
+    if (init_tim571() < 0) {
+        LOGM_ERROR(loggerLidar, "init", "msg=\"error: init_tim571() failed!\"");
+        return -1;
+    }
+    
 #ifdef ISTRO_GUI    
     namedWindow("Lidar", 0 );
     resizeWindow("Lidar", 640, 480);
@@ -98,75 +141,364 @@ int Lidar::init(const char *portName)
     imshow("Lidar", img);
 #endif
 
+    return 0; 
+}
+
+int Lidar::send_start_measurement()
+{
+    static const char *start_measurement = "\002sEN LMDscandata 1\003";
+    if (write(sockfd, start_measurement, strlen(start_measurement)) < 0)
+    {
+        LOGM_ERROR(loggerLidar, "send_start_measurement", "msg=\"error: writing start measurement packet to tim571!\"");
+        return -1;
+    }
     return 0;
 }
 
-bool Lidar::checkHealth(void)
+int Lidar::skip_to_sentence_start()
 {
-    u_result op_result;
-    rplidar_response_device_health_t healthinfo;
-//int fixme_checkhealth;
-//return true;
+    uint8_t readbuf;
+    while (program_runs)
+    {
+        int nread = read(sockfd, &readbuf, 1);
+        if (nread < 0)
+        {
+            LOGM_ERROR(loggerLidar, "skip_to_sentence_start", "msg=\"error: reading response from tim571!\"");
+            return -1;
+        }
+        if (readbuf == STX) return 0;
+    }
+    return -2;
+}
 
-    op_result = drv->getHealth(healthinfo);
-    if (IS_OK(op_result)) { // the macro IS_OK is the preperred way to judge whether the operation is succeed.
-        LOGM_TRACE(loggerLidar, "checkHealth", "status=" << (int)healthinfo.status);
-        if (healthinfo.status == RPLIDAR_STATUS_ERROR) {
-            LOGM_ERROR(loggerLidar, "checkHealth", "internal error detected, please reboot the device!");
-            // enable the following code if you want rplidar to be reboot by software
-            // drv->reset();
-            return false;
-        } else {
-            return true;
+int Lidar::read_sentence(int log)
+{
+    uint8_t *readbuf = sentence;
+    skip_to_sentence_start();
+
+    while (program_runs)
+    {
+        int nread = read(sockfd, readbuf, 1);
+        if (nread < 0)
+        {
+            LOGM_ERROR(loggerLidar, "read_sentence", "msg=\"error: reading response from tim571!\"");
+            return -1;
+        }
+        if (readbuf[0] == ETX)
+        {
+            readbuf[0] = 0;
+            if (log)  
+            {
+                LOGM_DEBUG(loggerLidar, "read_sentence", "data=\"" << sentence << "\"");
+            }
+            return 0;
+        }
+        readbuf++;
+    }
+    return -2;
+}
+
+char TIM571_TOKEN_END[] = "END";  // fixme const
+
+char *Lidar::get_next_word()
+{
+    if (sp == 0) return TIM571_TOKEN_END;
+
+    char *nxt = strchr(sp, ' ');
+    char *wrd = sp;
+    if (nxt != 0)
+    {
+        *nxt = 0;
+        sp = nxt + 1;
+    }
+    else sp = 0;
+    return wrd;
+}
+
+char *Lidar::get_next_str()
+{
+    if (sp == 0) return TIM571_TOKEN_END;
+
+    uint32_t str_len;
+    sscanf(get_next_word(), "%x", &str_len);
+
+    if (sp == 0) return TIM571_TOKEN_END;
+
+    *(sp + str_len) = 0;
+    char *wrd = sp;
+
+    sp += (str_len + 1);
+    return wrd;
+}
+
+int Lidar::process_sentence()
+{
+    sp = (char *)sentence;
+    char *token = get_next_word();
+
+    if (strcmp(token, "sSN") != 0)
+    {
+        LOGM_ERROR(loggerLidar, "process_sentence", "msg=\"error: unexpected start of TiM571 sentence!\", token=\"" << token << "\"");
+        return -1;
+    }
+    token = get_next_word();
+    if (strcmp(token, "LMDscandata") != 0)
+    {
+        LOGM_ERROR(loggerLidar, "process_sentence", "msg=\"error: unexpected data response string of TiM571 sentence!\", token=\"" << token << "\"");
+        return -2;
+    }
+
+    uint32_t tval32;
+
+    token = get_next_word();
+    sscanf(token, "%x", &tval32);
+
+    tim571_firmware = (uint16_t)tval32;
+
+    if (tim571_firmware != 1) {
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: unexpected firmware version!\", token=\"" << token << "\"");
+    }
+
+    token = get_next_word();
+    sscanf(token, "%x", &tval32);
+    tim571_sopas_device_id = tval32;
+
+    token = get_next_word();
+    sscanf(token, "%x", &tim571_serial_num);
+
+    token = get_next_word();
+    if (strcmp(token, "0") != 0)
+    {
+        tim571_error = 1;
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: status1 is device error!\", token=\"" << token << "\"");
+        return -3;
+    }
+
+    token = get_next_word();
+    if (strcmp(token, "0") != 0)
+    {
+        tim571_error = 1;
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: status2 is device error!\", token=\"" << token << "\"");
+        return -4;
+    }
+    tim571_error = 0;
+
+    uint32_t cnt;
+    sscanf(get_next_word(), "%x", &cnt);
+    if (tim571_telegram_counter && (cnt != tim571_telegram_counter + 1)) {
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: out of order telegram counter!\", cnt=" << cnt << ", tcnt=" << tim571_telegram_counter);
+    }
+    tim571_telegram_counter = cnt;
+
+    get_next_word(); // scan counter
+
+    token = get_next_word();
+    sscanf(token, "%x", &tim571_timestamp); // time since startup
+    get_next_word(); // time of transmission
+    get_next_word(); // input status
+    get_next_word();
+    get_next_word(); // output status
+    get_next_word();
+    get_next_word(); // reserved byte
+
+    token = get_next_word();
+    sscanf(token, "%x", &tim571_scanning_frequency);
+    if (tim571_scanning_frequency != 1500) {
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: scanning frequency is not 1500!\", token=\"" << token << "\"");
+    }
+
+    get_next_word(); // measurement frequency
+    get_next_word(); // number of encoders
+    get_next_word(); // number of channels
+
+    token = get_next_word();
+    if (strcmp(token, "DIST1") != 0)
+    {
+        LOGM_ERROR(loggerLidar, "process_sentence", "msg=\"error: expected data header DIST1!\", token=\"" << token << "\"");
+        return -5;
+    }
+
+    token = get_next_word();
+    uint32_t multiplier;
+    sscanf(token, "%x", &multiplier);
+    float *multiplier_as_float;
+    multiplier_as_float = (float *)(&multiplier);
+    tim571_multiplier = *multiplier_as_float;
+    if (tim571_multiplier != 1.0) {
+        LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: unusual multiplier (1 expected)!\", token=\"" << token << "\"");
+    }
+
+    get_next_word(); // scaling offset
+
+    token = get_next_word();
+    sscanf(token, "%x", &tval32);
+    tim571_starting_angle = *((int32_t *)(&tval32));
+
+    token = get_next_word();
+    sscanf(token, "%x", &tval32);
+    tim571_angular_step = (uint16_t)tval32;
+
+    token = get_next_word();
+    sscanf(token, "%x", &tval32);
+    tim571_data_count = (uint16_t)tval32;
+
+    for (int i = 0; i < tim571_data_count; i++)
+    {
+        token = get_next_word();
+        sscanf(token, "%x", &tval32);
+        tim571_data[i] = (uint16_t)tval32;
+    }
+
+    int will_send_RSSI;
+    sscanf(get_next_word(), "%d", &will_send_RSSI);
+
+    if (will_send_RSSI)
+    {
+        token = get_next_word();
+        if (strcmp(token, "RSSI1") != 0)
+        {
+            LOGM_WARN(loggerLidar, "process_sentence", "msg=\"error: expected data header RSSI1!\", token=\"" << token << "\"");
+            return -6;
         }
 
-    } else {
-        LOGM_ERROR(loggerLidar, "checkHealth", "cannot retrieve health code!, res=" << (int)op_result);
-        return false;
+        for (int i = 0; i < tim571_data_count; i++)
+        {
+            token = get_next_word();
+            sscanf(token, "%x", &tval32);
+            tim571_rssi_data[i] = (uint8_t)tval32;
+        }
+    }
+    tim571_rssi_channels = will_send_RSSI;
+
+    get_next_word(); // no position data
+
+    int will_send_name;
+    sscanf(get_next_word(), "%d", &will_send_name);
+
+    if (will_send_name)
+    {
+        token = get_next_str();
+        strncpy(tim571_name, token, 17);  // fixme
+    }
+    else tim571_name[0] = 0;
+
+    get_next_word(); // no comment information
+    get_next_word(); // no time information
+    get_next_word(); // no event information
+
+    return 0;
+}
+
+/*
+double Lidar::tim571_ray2azimuth(int ray)
+{
+  return 135 - (ray / ((double)TIM571_DATA_COUNT - 1)) * 270.0;
+}
+
+int Lidar::tim571_azimuth2ray(int alpha)
+{
+  if (360 - alpha <= TIM571_TOTAL_ANGLE_DEG / 2) alpha -= 360;
+  if (alpha < -TIM571_TOTAL_ANGLE_DEG / 2) alpha = -TIM571_TOTAL_ANGLE_DEG / 2;
+  else if (alpha > TIM571_TOTAL_ANGLE_DEG / 2) alpha = TIM571_TOTAL_ANGLE_DEG / 2;
+  return TIM571_DATA_COUNT / 2 - alpha * TIM571_SIZE_OF_ONE_DEG;
+}
+*/
+
+void Lidar::copy_status_data(tim571_status_data *status_data)
+{
+    status_data->firmware_version = tim571_firmware;
+    status_data->sopas_device_id = tim571_sopas_device_id;
+    status_data->serial_number = tim571_serial_num;
+    status_data->error = tim571_error;
+    status_data->scanning_frequency = tim571_scanning_frequency;
+    status_data->multiplier = tim571_multiplier;
+    status_data->starting_angle = tim571_starting_angle;
+    status_data->angular_step = tim571_angular_step;
+    status_data->data_count = tim571_data_count;
+    status_data->rssi_available = tim571_rssi_channels;
+    strncpy(status_data->name, tim571_name, 17);  // fixme 17
+}
+
+#define TIM571_LOGSTR_LEN 1024
+
+void Lidar::log_tim571_data(tim571_status_data *sd, uint16_t *dist, uint8_t *rssi)
+{
+    char str[TIM571_LOGSTR_LEN];
+
+    sprintf(str, "firmware_version=%d, sopas_device_id=%d, serial_number=%d, error=%d, scanning_frequency=%u, multiplier=%.3f, starting_angle=%d, angular_step=%u, data_count=%d, rssi_available=%d",
+        sd->firmware_version, sd->sopas_device_id, sd->serial_number, sd->error, sd->scanning_frequency, sd->multiplier, sd->starting_angle, sd->angular_step, sd->data_count, sd->rssi_available);
+
+    LOGM_DEBUG(loggerLidar, "log_tim571_data", str);
+
+    str[0] = 0;
+    for (int i = 0; i < sd->data_count; i++)
+    {
+        if (str[0] != 0) {
+            char *str2 = &str[strlen(str)];
+            sprintf(str2, ", ");
+        }
+
+        char *str2 = &str[strlen(str)];
+        sprintf(str2, "dist[%d]=%u, rssi[%d]=%u", i, dist[i], i, tim571_rssi_data[i]);
+
+        if (((i + 1) % 10) == 0) {
+            LOGM_DEBUG(loggerLidar, "log_tim571_data", str);
+            str[0] = 0;
+        }
+    }
+
+    if (str[0] != 0) {
+        LOGM_DEBUG(loggerLidar, "log_tim571_data", str);
     }
 }
 
-void Lidar::close(void)
-{
-    int fixme_stopmotor;
-
-    //drv->stop();
-    //drv->stopMotor();
-
-    RPlidarDriver::DisposeDriver(drv);
+bool Lidar::checkHealth(void) 
+{ 
+    return true; 
 }
+
+void Lidar::close(void) 
+{
+    if (sockfd >= 0) {
+        ::close(sockfd);    // unistd::close()
+    }
+
+    free(tim571_rssi_data);
+    free(tim571_data);
+}
+
+int log_getdata = 1;
 
 int Lidar::getData(lidar_data_t *data, int& data_cnt)
 {
-    u_result op_result;
-    size_t count = 8192;  // LIDAR_DATA_NUM;
-    rplidar_response_measurement_node_t nodes[8192];  // LIDAR_DATA_NUM];
-    int fixme_getdata_8192;
-    
-    data_cnt = -1;
+    data_cnt = 0;
 
-    op_result = drv->grabScanData(nodes, count);
-    if (!IS_OK(op_result)) {
-        LOGM_ERROR(loggerLidar, "getData", "grabScanData failed!, res=" << (int)op_result);
+    if (read_sentence(0) < 0) {
         return -1;
     }
-    
-    drv->ascendScanData(nodes, count);
+    if (process_sentence() < 0) {
+        return -2;
+    }
 
-    if (count > LIDAR_DATA_NUM) {
-        LOGM_WARN(loggerLidar, "getData", "count larger than 720!, count=" << (int)count);
-        count = LIDAR_DATA_NUM;
+    if (log_getdata) {
+        tim571_status_data status_data;
+        copy_status_data(&status_data);
+        log_tim571_data(&status_data, tim571_data, tim571_rssi_data);
+        log_getdata = 0;
     }
-    
-    for (int pos = 0; pos < (int)count; ++pos) {
-        data->sync = nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT;
-        data->angle = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
-        data->distance = nodes[pos].distance_q2/4.0f;
-        data->quality = nodes[pos].sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;        
-        data++;
+
+    int j = 0;
+    /* pozor: uhly v poli data musia vzdy narastat, inak to nefunguje (fixme) */
+    for(int i = tim571_data_count - 1; i >= 0; i--) {
+        float angle = 180 - (i/3.0 - 45.0);
+        data[j].sync = 0;  
+        data[j].angle = (angle>=0)?(angle):(angle+360);
+        data[j].distance = tim571_data[i];
+        data[j++].quality = tim571_rssi_data[i];            
     }
+
+    data_cnt = j;
     
-    data_cnt = (int)count;
     return 0;
 }
 
@@ -522,7 +854,6 @@ int Lidar::getData(lidar_data_t *data, int& data_cnt)
     // no obstacle
     for (i = 0; i < data_cnt; i++) {
         data[i].quality = 0;
-        data[i].distance = 0;
     }
 
 /*
@@ -802,4 +1133,3 @@ line(img,Point(xn,yn),Point(xn+1,yn),color2,1,8,0);
 
     return 0;    
 }
-

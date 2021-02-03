@@ -20,14 +20,18 @@ const int PROCESS_STATE_BALLDROP_9   = 19;
 class DataSet {
 public:
     Mat camera_img;
-    
+    Mat camera_img_pred;
+
+    Mat camera_depth;
+    Mat camera_depth_pred;
+
 public:
     Mat vision_markers;
     Mat vision_markersIM;
 
-    Mat vision_epweigth;
-    Mat vision_elweigth;
-    
+    Mat vision_epweight;
+    Mat vision_elweight;
+
     DegreeMap vision_dmap;
     int vision_angle_min;
     int vision_angle_max;
@@ -35,11 +39,11 @@ public:
 public:
     double qrscan_latitude;
     double qrscan_longitude;
-    
+
 public:
     int lidar_data_cnt;
     lidar_data_t lidar_data[LIDAR_DATA_NUM];
-    
+
     DegreeMap lidar_dmap;
     int lidar_angle_min; 
     int lidar_angle_max;

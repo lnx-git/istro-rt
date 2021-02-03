@@ -1,3 +1,78 @@
+13.12.2020
+- vision_depth: zvacseny limit pre detekciu jam (doplnenie MAX_PP2), lebo inak nevysiel do sikminy
+- visionn_server: pouzity novy NN model (model_201212_resnet_f4b3_e0303.pb) trenovany aj na trave s namrazou
+- navig_data: pre mapu SadJK posun bodu V4 na krizovatku vpravo - lepsie pre trasy cez cely park
+
+20.11.2020
+- vision_depth: prerobenie process() podla dist pre kazdy pixel, nie podla riadku obrazku (snaha odstranit flaky)
+- vision_depth: resizeovanie okna z 848x480 zodpovedajucich pixlov RGB obrazu na 640x480 (chybajuci resize bol bug)
+
+11.10.2020
+- vision: doplnenie konstruktora, aby bolo mozne vytvorit viacere instancie s roznymi ep_size a ep_threshold
+- vision_depth: vlastna vision instancia + aplikovanie vysledkov vision_depth do vysledneho obrazka vision
+
+4.10.2020
+- vision: doplnena "HD-VIEW" transformacia bodov v obraze (16:9), prepinac "ISTRO_VISION_HDVIEW"
+
+3.10.2020
+- vytvoreny skript "mvout.sh" s truncatovanim visionn_server logov (aby nebolo potrebne ho vzdy restartovat)
+
+27.9.2020
+- visionn_server: dorobene skripty "visionn_server_start/stop/restart.sh"
+
+17.9.2020
+- vision_depth: spracovanie obrazu z hlbkovej kamery Realsense, len prvotny test (nezaintegrovane do processingu)
+
+13.9.2020
+- istro_rt2020: wrongway: cas cuvania skrateny zo 4,5 sek na 2,5 sek; ignorovanie vzdialenosti od posledneho nav bodu
+- istro_rt2020: gps_thread: oprava vypoctu total_dist (hodnota sa nezvysovala)
+- istro_rt2020: calibration: priebezne logovanie calibracnych konstant pre kontrolu kompasu (calib2)
+- visionn: zakomentovane logovanie obsahu paketov posielanych do visionn_servera
+- navig_data: pre mapu SadJK nastavenie bodov "*1", "*2" a "*3", aby sa zadavali cez QR kody
+
+12.9.2020
+- navig/navmap: doplnena mapa Klondajku pri Prahe "ISTRO_MAP_KLONDAJK" - zatial bez navigacnych bodov a QR kodov
+- istro_rt2020: v Camera::getFrame() zmeneny typ interpolacie na INTER_NEAREST - malo by to byt rychlejsie
+
+11.9.2020
+- camera: zmena rozlisenia pre Realsense kameru na 848x480
+- istro_rt2019: gps_thread: vypocet celkovej prejdenej vzdialenosti total_dist
+
+9.9.2020
+- istro_rt2020: implementovane disablovanie wrongway s logovanim (WRONG_WAY_DISABLE), kvoli debugovaniu
+- istro_rt2020::process_thread: fixnuta logika process_stop podla vision aj lidaru
+
+8.9.2020
+- camera: pre Intel RealSense D435 implementovane vytvaranie suboru s hlbkami "out/camera_depth.json"
+- lidar: metoda drawOutput() prerobena na vytvaranie JSON suboru "out/lidar.json"
+
+4.9.2020
+- rt2020: priprava na Robotour 2020, zmenene prefixy rt2019 na rt2020
+- visionn_server: nahraty model.pb z trenovania "200826_resnet_f4b3_e0300"
+- visionn_server: nahraty model.pb z trenovania "200827_resnet_f4b3_e0300", "model_200901_resnet_f16b3"
+
+18.1.2020
+- visionn_server: nahraty model.pb z noveho trenovania "200117_resnet_f2b4_e410e300"
+
+17.1.2020
+- istro_rt2019.cpp: wrongway_check() doplnene testovanie zastavenia, cas statia sa nepocita do vyhodnotenia
+- istro_rt2019.cpp: wrongway_process() oprava, aby pred cuvanim 2x zastavil a rozbehol sa spat, inak nefungovalo
+- logp: doplnene parsovanie nazvov "cdepth" obrazkov pre ucely www zobrazovanie
+- html: doplnenie zobrazovania "cdepth" obrazkov do .html a .js
+- istro_rt2019.cpp: zakomentovanie aktualizovania process_x/y podla gps_x/y ("fixme_no_process_gps_xy")
+
+16.1.2020
+- istro_rt2019.cpp: implementovane zapisovanie depth-mapy z RealSense kamery vo forme obrazkov na disk
+
+14.11.2019
+- camera: pred MakerFaire implementovane stahovanie obrazkov z RealSense kamery
+
+27.10.2019
+- visionn: implementovane spracovanie obrazu pomocou neuronovej siete cez Tensorflow v pythone
+
+25.9.2019
+- navig/navmap: doplnena mapa Nabrezia Dunaja v Bratislave "ISTRO_MAP_BA_NABREZIE"
+
 13.9.2019
 - kml: vygenerovane qr-kody pre mapu v Deggendorfe
 - html: upravena html stranka s mapami "map_rt2019.html"

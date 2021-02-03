@@ -16,7 +16,7 @@ S2 je motor, S2_MAX je plny dopredu, S2_min je plny dozadu, S_CENTER je stred (S
 */
 
 // Steering angle limits
-#define SA_STRAIGHT    340    //334   // 92    // upravene 13.4.2019, lebo pri 334 zatacal moc vlavo
+#define SA_STRAIGHT    334    //340    // upravene 13.4.2019 na 340, lebo pri 334 zatacal moc vlavo
 #define SA_MIN         215    //SA_STRAIGHT-50
 #define SA_MAX         455    //SA_STRAIGHT+50
 #define SA_FIX         (SA_STRAIGHT - 90)

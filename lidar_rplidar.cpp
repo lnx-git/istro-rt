@@ -30,9 +30,9 @@ const float LIDAR_STOP_ANGLE_MAX     = 135;    // maximum angle where distance i
 const int   LIDAR_STOP_COUNT         =   3;    // number of angles where the distance must be exceeded
 
 #ifndef WIN32
-const string outputFName = "out/lidar.log";
+const string outputFName = "out/lidar.json";
 #else
-const string outputFName = "out\\lidar.log";
+const string outputFName = "out\\lidar.json";
 #endif
 
 LOG_DEFINE(loggerLidar, "Lidar");
@@ -44,7 +44,7 @@ int Lidar::init(const char *portName)
     const char * opt_com_path = portName;
     _u32         opt_com_baudrate = 115200;
 
-#ifdef ISTRO_RPLIDAR_V16
+#ifdef ISTRO_RPLIDAR_V106
     drv = RPlidarDriver::CreateDriver(DRIVER_TYPE_SERIALPORT);
 #else
     drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
@@ -70,7 +70,7 @@ int Lidar::init(const char *portName)
     }
 
     // start scan...
-#ifdef ISTRO_RPLIDAR_V16
+#ifdef ISTRO_RPLIDAR_V106
     drv->startScan(0, 1);
 #else
     drv->startScan();
@@ -571,19 +571,38 @@ int Lidar::process(const lidar_data_t *data, const int& data_cnt, DegreeMap& dma
     return 0;
 }
 
+/*
+{"LIDAR_DATA_FILE":[
+{"image_number":"0001527","lidar_data":[
+[11.09,2600.50,13],
+[12.00,3054.00,10]]},
+
+{"image_number":"0001527","lidar_data":[
+[11.09,2600.50,13],
+[12.00,3054.00,10]]}
+]}
+*/
+
 int Lidar::drawOutput(const lidar_data_t *data, const int& data_cnt, Mat& img, /*const DegreeMap& dmap,*/ int stop, int angle_min, int angle_max, int process_angle, int process_angle_min, int process_angle_max, long image_number)
 {
     double t = timeBegin();    
     char outgingData[30] = "";
 
-    FILE * pFile;
-    pFile = fopen (outputFName.c_str(), "a");
-    if (pFile!=NULL) {    
-        for (int pos = 0; pos < data_cnt; ++pos) {
-            fprintf(pFile,"%s %07u theta: %03.2f Dist: %08.2f Q: %d\n", 
-                (data[pos].sync) ?"S":"R", (unsigned int)(image_number<0?999999:image_number), data[pos].angle, data[pos].distance, data[pos].quality);
+    if (data_cnt > 0) {
+        FILE * pFile;
+        pFile = fopen(outputFName.c_str(), "a");
+        if (pFile!=NULL) {    
+            fprintf(pFile, "{\"image_number\":%d,\"lidar_data\":[\n", (int)image_number);
+            for (int pos = 0; pos < data_cnt - 1; pos++) {
+                fprintf(pFile, "[%d,%.2f,%.2f,%d],", 
+                    data[pos].sync, data[pos].angle, data[pos].distance, data[pos].quality);
+                if (pos%4 == 3) fputs("\n", pFile);
+            }
+            int pos = data_cnt - 1;
+            fprintf(pFile, "[%d,%.2f,%.2f,%d]]},\n", 
+                data[pos].sync, data[pos].angle, data[pos].distance, data[pos].quality);
+            fclose(pFile);
         }
-        fclose (pFile);
     }
 
     img.create(480,640,CV_8UC3);

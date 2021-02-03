@@ -195,6 +195,15 @@ const gps_data_t gps_data[GPSDEV_DATA_COUNT] =
 };
 #endif
 
+#ifdef ISTRO_MAP_BA_NABREZIE
+const int    GPSDEV_DATA_COUNT = 1;
+
+const gps_data_t gps_data[GPSDEV_DATA_COUNT] = 
+{
+    { 48.1399831, 17.1165786, 0.442, 294.28 }
+};
+#endif
+
 #ifdef ISTRO_MAP_MLAZNE_HAMRNIKY
 const int    GPSDEV_DATA_COUNT = 1;
 
@@ -266,6 +275,25 @@ const gps_data_t gps_data[GPSDEV_DATA_COUNT] =
     { 48.831143, 12.957402, 0.442, 294.28 }  //  "X8"
 };
 #endif
+
+#ifdef ISTRO_MAP_KLONDAJK
+const int    GPSDEV_DATA_COUNT = 1;
+
+const gps_data_t gps_data[GPSDEV_DATA_COUNT] = 
+{
+    { 49.845089, 14.1606168, 0.442, 294.28 }
+};
+#endif
+
+#ifdef ISTRO_MAP_BA_PARKAH
+const int    GPSDEV_DATA_COUNT = 1;
+
+const gps_data_t gps_data[GPSDEV_DATA_COUNT] = 
+{
+    { 48.1565166, 17.1554347, 0.442, 294.28 }    // W1
+};
+#endif
+
 
 int getdata_cnt = 0;
 
