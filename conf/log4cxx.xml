@@ -10,10 +10,11 @@
   </appender>
   
   <!-- Output the log message to log file -->
-  <appender name="istroFileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="out/istro_rt2019.log" />
-    <param name="bufferedIO" value="true"/>
-    <param name="bufferSize" value="1048576"/>
+  <appender name="istroFileAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="file" value="logout/istro_rt2020.log" />
+    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+       <param name="FileNamePattern" value="logout/istro_rt2020.%d{HH_mm}.log"/>
+    </rollingPolicy>
     <param name="append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
     <param name="ConversionPattern" value="%d %-5p [%X{threadName}] %c:%m%n" />
