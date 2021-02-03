@@ -1,0 +1,13 @@
+    1  cd road-segmentation/data
+    2  ls
+    3  python convert_pixant.py --pix_folder=datasets/201122_BA_ParkAH/pixant/ --img_folder=datasets/201122_BA_ParkAH/image --mask_folder=datasets/201122_BA_ParkAH/masks > convert_pixant.log
+    4  python split_data.py --img_folder datasets/201122_BA_ParkAH/image --mask_folder datasets/201122_BA_ParkAH/masks
+    5  cd ..
+    6  ls
+    7  python run.py train -m resnet -e 3 -a True -w trained_models/resnet_gen_aug_rgb_640x480_2020-08-27-194323.hdf5 > resnet_f4b3_e0303_2020-12-12-2216_train.log 2>&1
+    8  python run.py train -m resnet -e 300 -a True -w trained_models/resnet_gen_aug_rgb_640x480_2020-12-12-221858.hdf5 > resnet_f4b3_e0303_2020-12-12-2258_train.log 2>&1
+    9  python run.py freeze -m resnet -p trained_models/resnet_gen_aug_rgb_640x480_2020-12-12-225823.hdf5 > resnet_f4b3_e0303_2020-12-12-2258_freeze.log 2>&1
+   10  python run.py predict2 -m resnet -p trained_models/model.pb > resnet_f4b3_e0303_2020-12-12-2258_predict2.log 2>&1
+   11  python run.py predict2 -p trained_models/model.pb > resnet_f4b3_e0303_2020-12-12-2258_predict2b.log 2>&1
+   12  python run.py predict -m resnet -p trained_models/resnet_gen_aug_rgb_640x480_2020-12-12-225823.hdf5 > resnet_f4b3_e0303_2020-12-12-2258_predict_val.log 2>&1
+   13  history > history_201212a.txt

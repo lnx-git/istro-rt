@@ -1,0 +1,7 @@
+Using TensorFlow backend.
+/usr/local/lib/python3.6/dist-packages/classification_models/resnext/__init__.py:4: UserWarning: Current ResNext models are deprecated, use keras.applications ResNeXt models
+  warnings.warn('Current ResNext models are deprecated, '
+Usage: run.py predict2 [OPTIONS]
+Try "run.py predict2 --help" for help.
+
+Error: no such option: -m

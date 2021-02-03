@@ -1,0 +1,51 @@
+2020-12-13 08:15:33.572022: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-12-13 08:15:33.575886: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcuda.so.1
+2020-12-13 08:15:33.715334: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.715677: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5d4c240 executing computations on platform CUDA. Devices:
+2020-12-13 08:15:33.715693: I tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device (0): GeForce GTX 1060 with Max-Q Design, Compute Capability 6.1
+2020-12-13 08:15:33.733873: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2199995000 Hz
+2020-12-13 08:15:33.734234: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5e77600 executing computations on platform Host. Devices:
+2020-12-13 08:15:33.734249: I tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device (0): <undefined>, <undefined>
+2020-12-13 08:15:33.734374: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.734605: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1640] Found device 0 with properties: 
+name: GeForce GTX 1060 with Max-Q Design major: 6 minor: 1 memoryClockRate(GHz): 1.48
+pciBusID: 0000:01:00.0
+2020-12-13 08:15:33.734788: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcudart.so.10.0
+2020-12-13 08:15:33.735781: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcublas.so.10.0
+2020-12-13 08:15:33.736611: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcufft.so.10.0
+2020-12-13 08:15:33.736823: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcurand.so.10.0
+2020-12-13 08:15:33.738003: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcusolver.so.10.0
+2020-12-13 08:15:33.738903: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcusparse.so.10.0
+2020-12-13 08:15:33.741424: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcudnn.so.7
+2020-12-13 08:15:33.741519: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.741821: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.742037: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1763] Adding visible gpu devices: 0
+2020-12-13 08:15:33.742071: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcudart.so.10.0
+2020-12-13 08:15:33.742737: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1181] Device interconnect StreamExecutor with strength 1 edge matrix:
+2020-12-13 08:15:33.742748: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1187]      0 
+2020-12-13 08:15:33.742754: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1200] 0:   N 
+2020-12-13 08:15:33.742833: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.743093: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:1005] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2020-12-13 08:15:33.743335: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1326] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 5452 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1060 with Max-Q Design, pci bus id: 0000:01:00.0, compute capability: 6.1)
+2020-12-13 08:15:34.722080: I tensorflow/stream_executor/platform/default/dso_loader.cc:42] Successfully opened dynamic library libcudnn.so.7
+Using TensorFlow backend.
+/usr/local/lib/python3.6/dist-packages/classification_models/resnext/__init__.py:4: UserWarning: Current ResNext models are deprecated, use keras.applications ResNeXt models
+  warnings.warn('Current ResNext models are deprecated, '
+WARNING: Logging before flag parsing goes to stderr.
+W1213 08:15:35.586255 140663161804608 util.py:64] Lossy conversion from float32 to uint8. Range [0.0, 255.0]. Convert image to uint8 prior to saving to suppress this warning.
+W1213 08:15:35.611756 140663161804608 util.py:64] Lossy conversion from float64 to uint8. Range [0.0, 255.0]. Convert image to uint8 prior to saving to suppress this warning.
+read file...
+image_size: [480, 640, 3]
+input_tensor_name: input_1:0
+output_tensor_name: convLast/Sigmoid:0
+import graph...
+load image...
+x0.shape: (480, 640, 3), x.shape: (1, 480, 640, 3)
+run...
+duration: 1.5671603679656982
+duration: 0.016306400299072266
+duration: 0.0163266658782959
+duration: 0.01648116111755371
+duration: 0.017760515213012695
+p0.shape: (1, 480, 640, 1), p.shape: (480, 640, 1)
+finished...
