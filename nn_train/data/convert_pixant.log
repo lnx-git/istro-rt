@@ -1,0 +1,307 @@
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0018118_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0023144_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0011500_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0021775_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0007117_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0006989_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0024606_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002338_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0002638_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0000177_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002251_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8189492_0016275_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0014518_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0001741_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0006934_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0004249_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0013791_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0075537_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0003332_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0062822_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0003478_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0002654_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0005888_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0004967_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0012751_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002241_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0011456_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002270_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0007440_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0011836_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0027579_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0004497_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0004114_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0024031_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0011827_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002102_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0036814_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0024573_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0020393_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0075428_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0022891_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0070051_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0069768_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0011674_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0001380_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0004777_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0023334_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0085596_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0067425_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0004468_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0011242_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0011603_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0032215_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0027226_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0005690_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002461_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0000143_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0021163_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0085083_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002085_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0010449_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0014864_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0003988_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002081_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0010565_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002448_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0017905_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0001152_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0003814_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0025653_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0003059_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0012026_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0004203_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0016711_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0032806_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0013980_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0001754_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0001219_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0025507_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0001269_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0013558_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0001859_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0001016_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0020928_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0005910_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0002480_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002443_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0002546_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0011778_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0004156_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0005793_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002394_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4198512_0018230_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0025190_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002669_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0036635_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_1515933_0002254_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4215139_0001152_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_8943840_0006378_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0021920_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4323477_0062694_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+save: image_name=datasets/201122_BA_ParkAH/pixant/rt2020_4264296_0011178_camera.jpg, img_folder=datasets/201122_BA_ParkAH/image, mask_folder=datasets/201122_BA_ParkAH/masks
+image.shape: image_width=640, image_height=480
+mask.shape: mask_width=640, mask_height=480
+finished: pix_cnt=102, img_cnt=102
