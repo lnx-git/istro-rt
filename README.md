@@ -7,7 +7,7 @@ is originally Czech contest of autonomous robots navigating on paved park roads.
 https://robotika.cz/competitions/robotour/en
 
 Roadsegmentation - project used for neural network training:\
-https://github.com/Adman/road-segmentation
+https://github.com/Adman/road-segmentation \
 https://github.com/Adman/road-segmentation/tree/master/data/datasets
 
 Smely zajko team repository:\
