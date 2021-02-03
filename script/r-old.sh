@@ -1,6 +1,6 @@
 #!/bin/bash
-CMD="/home/istrobotics/projects/istro_rt2019/istro_rt2019"
-FS="/home/istrobotics/projects/istro_rt2019/out"
+CMD="/home/istrobotics/projects/istro_rt2020/istro_rt2020"
+FS="/home/istrobotics/projects/istro_rt2020/out"
 TRESHOLD=7000
 
 free_space_mb()
@@ -24,20 +24,21 @@ else
    exit -1
 fi
 
-cd /home/istrobotics/projects/istro_rt2019/
-rm /home/istrobotics/projects/istro_rt2019/out/lidar.log
-rm /home/istrobotics/projects/istro_rt2019/out/rt2019_*jpg
-rm /home/istrobotics/projects/istro_rt2019/out/rt2019_*png
-rm /home/istrobotics/projects/istro_rt2019/out/rt2019_*kml
-rm /home/istrobotics/projects/istro_rt2019/out/istro_rt2019.log
+cd /home/istrobotics/projects/istro_rt2020/
+rm /home/istrobotics/projects/istro_rt2020/out/lidar.json
+rm /home/istrobotics/projects/istro_rt2020/out/camera_depth.json
+rm /home/istrobotics/projects/istro_rt2020/out/rt2020_*jpg
+rm /home/istrobotics/projects/istro_rt2020/out/rt2020_*png
+rm /home/istrobotics/projects/istro_rt2020/out/rt2020_*kml
+rm /home/istrobotics/projects/istro_rt2020/out/istro_rt2020.log
 
 sudo killall gpspipe
-rm /home/istrobotics/projects/istro_rt2019/out/gpspipe.log
+rm /home/istrobotics/projects/istro_rt2020/out/gpspipe.log
 mkdir -p out
 gpspipe -r -o out/gpspipe.log &
 
-python /home/istrobotics/projects/istro_rt2019/script/serial_scan.py
-CMD=$CMD`python /home/istrobotics/projects/istro_rt2019/script/serial_cmd.py`
+python /home/istrobotics/projects/istro_rt2020/script/serial_scan.py
+CMD=$CMD`python /home/istrobotics/projects/istro_rt2020/script/serial_cmd.py`
 CMD=$CMD" -nowait -i DIstrobotics -path S1 -vf 24 -vb -17"
 #CMD=$CMD" -nowait -i DIstrobotics -path X1*1*2*3 -vf 14 -vb -17"
 #CMD=$CMD" -nowait -i DIstrobotics -path *1*2*3 -vf 12 -vb -15"

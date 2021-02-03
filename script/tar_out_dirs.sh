@@ -8,7 +8,7 @@
 #                                                        #
 ##########################################################
 
-SOURCE_DIR=/home/istrobotics/projects/istro_rt2019/
+SOURCE_DIR=/home/istrobotics/projects/istro_rt2020/
 
 cd $SOURCE_DIR 
 

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -14,27 +15,29 @@ const int BUFFER_SIZE = 1024 * 1024;
 
 #ifndef WIN32
 
-const char *LOG_FNAME      = "/home/istrobotics/projects/istro_rt2019/out/istro_rt2019.log";
-const char *OUT_TXT_FNAME  = "/var/www/html/ramdisk/out/istro_rt2019_out.txt";
-const char *OUT_HTML_FNAME = "/var/www/html/ramdisk/out/istro_rt2019_out.html";
-const char *OUT_JSON_FNAME = "/var/www/html/ramdisk/out/istro_rt2019_out.json";
-//const char *OUT_TXT_FNAME  = "/tmp/ramdisk/out/istro_rt2019_out.txt";
-//const char *OUT_HTML_FNAME = "/tmp/ramdisk/out/istro_rt2019_out.html";
-//const char *OUT_JSON_FNAME = "/tmp/ramdisk/out/istro_rt2019_out.json";
+const char *GZIP_CMD       = "gzip /home/istrobotics/projects/istro_rt2020/logout/istro_rt2020.*.log";
+
+const char *LOG_FNAME      = "/home/istrobotics/projects/istro_rt2020/logout/istro_rt2020.log";
+const char *OUT_TXT_FNAME  = "/var/www/html/ramdisk/out/istro_rt2020_out.txt";
+const char *OUT_HTML_FNAME = "/var/www/html/ramdisk/out/istro_rt2020_out.html";
+const char *OUT_JSON_FNAME = "/var/www/html/ramdisk/out/istro_rt2020_out.json";
+//const char *OUT_TXT_FNAME  = "/tmp/ramdisk/out/istro_rt2020_out.txt";
+//const char *OUT_HTML_FNAME = "/tmp/ramdisk/out/istro_rt2020_out.html";
+//const char *OUT_JSON_FNAME = "/tmp/ramdisk/out/istro_rt2020_out.json";
 
 
 /* ubuntu */
-//const char *LOG_FNAME      = "/home/tf/projects/istro_rt2019/out/istro_rt2019.log";
-//const char *OUT_TXT_FNAME  = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.txt";
-//const char *OUT_HTML_FNAME = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.html";
-//const char *OUT_JSON_FNAME = "/home/tf/projects/istro_rt2019/out/istro_rt2019_out.json";
+//const char *LOG_FNAME      = "/home/tf/projects/istro_rt2020/out/istro_rt2020.log";
+//const char *OUT_TXT_FNAME  = "/home/tf/projects/istro_rt2020/out/istro_rt2020_out.txt";
+//const char *OUT_HTML_FNAME = "/home/tf/projects/istro_rt2020/out/istro_rt2020_out.html";
+//const char *OUT_JSON_FNAME = "/home/tf/projects/istro_rt2020/out/istro_rt2020_out.json";
 
 #else
 
-const char *LOG_FNAME      = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019.log";
-const char *OUT_TXT_FNAME  = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.txt";
-const char *OUT_HTML_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.html";
-const char *OUT_JSON_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2019\\out\\istro_rt2019_out.json";
+const char *LOG_FNAME      = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2020\\out\\istro_rt2020.log";
+const char *OUT_TXT_FNAME  = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2020\\out\\istro_rt2020_out.txt";
+const char *OUT_HTML_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2020\\out\\istro_rt2020_out.html";
+const char *OUT_JSON_FNAME = "C:\\Private\\robot\\istrobtx\\sources\\istro_rt2020\\out\\istro_rt2020_out.json";
 
 #endif
 
@@ -69,8 +72,9 @@ const int FIND_FLAGS_VISION_IMG = 2;
 const int FIND_FLAGS_LIDAR_IMG  = 3;
 const int FIND_FLAGS_WMGRID_IMG = 4;
 const int FIND_FLAGS_NAVMAP_IMG = 5;
+const int FIND_FLAGS_CDEPTH_IMG = 6;
 
-const int FIND_PATTERN_COUNT = 16;
+const int FIND_PATTERN_COUNT = 17;
 
 find_pattern_t findPattern[FIND_PATTERN_COUNT] = 
 {
@@ -79,6 +83,7 @@ find_pattern_t findPattern[FIND_PATTERN_COUNT] =
     { "saveImage(): lidar_image=",  NULL, 0, FIND_FLAGS_LIDAR_IMG },
     { "saveImage(): wmgrid_image=", NULL, 0, FIND_FLAGS_WMGRID_IMG },
     { "saveImage(): navmap_image=", NULL, 0, FIND_FLAGS_NAVMAP_IMG },
+    { "saveImage(): cdepth_image=", NULL, 0, FIND_FLAGS_CDEPTH_IMG },
     { "process_thread(): process_angle", NULL, 0, 0 },         // istro::process_thread(): process_angle("NAV_ANGLE"): 
     { "gps_writeData(): fix=", NULL, 0, 0 },                   // "gps_writeData....fix="
     { "process_readData(): process_change", NULL, 0, 0 },      // istro::process_readData(): process_change=52, gps_speed=0.021, 
@@ -198,12 +203,14 @@ int process_line(char const *p, size_t n)
 
 size_t buffer_cnt = 0;    // number of unprocessed bytes in buffer
 long int off = 0;
+int read_empty = 0;
 
 int init()
 {
 //printf("init\n");
     buffer_cnt = 0;
     off = 0;
+    read_empty = 0;
     for(int i = 0; i < FIND_PATTERN_COUNT; i++) { 
         findResult[i][0] = 0;
     }
@@ -266,6 +273,9 @@ int writeResult()
             } else 
             if (findPattern[i].flags == FIND_FLAGS_NAVMAP_IMG) {
                 fprintf(f, "  \"navmap_image\": \"%s%s\",\n", OUT_IMG_DNAME, findResult[i]);            
+            } else
+            if (findPattern[i].flags == FIND_FLAGS_CDEPTH_IMG) {
+                fprintf(f, "  \"cdepth_image\": \"%s%s\",\n", OUT_IMG_DNAME, findResult[i]);            
             }
         }
     }
@@ -293,6 +303,7 @@ int writeResult()
 int main()
 {
     FILE *fd = NULL;
+    int sleept = 0;
 
     init();
     while (true) {
@@ -321,7 +332,10 @@ printf("lseek: \"fseek error\"\n");
                 /* read next bytes until end of buffer or until end of file */
                 size_t read_cnt;
                 read_cnt = fread(&(buffer[buffer_cnt]), 1, BUFFER_SIZE - buffer_cnt, fd);
-                if ((read_cnt < 0) || (read_cnt > BUFFER_SIZE - buffer_cnt)) {
+                if (read_cnt==0) { 
+                    read_empty++; 
+                }
+		if ((read_cnt < 0) || (read_cnt > BUFFER_SIZE - buffer_cnt) || (read_empty > 10)) {
 printf("read: \"error2: could not read from file!\"\n");
                     read_cnt = 0;
                     fclose(fd);
@@ -382,7 +396,16 @@ printf("read: \"error2: could not read from file!\"\n");
             fclose(fd);
             fd = NULL;
         }
-        msleep(100);
+        msleep(250);    // 100);
+        sleept+=250;
+
+        if (sleept >= 15000) {  // 15 sekund
+printf("system: gzip executed...\n");
+#ifndef WIN32
+            system(GZIP_CMD);
+#endif
+            sleept = 0;
+        }
     }
 
 //printf("end...");

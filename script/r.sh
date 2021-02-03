@@ -1,10 +1,10 @@
 #!/bin/bash
 
-BIN=istro_rt2019
-DIR=/home/istrobotics/projects/istro_rt2019
+BIN=istro_rt2020
+DIR=/home/istrobotics/projects/istro_rt2020
 CMD=$DIR/$BIN
 OUTDIR=$DIR/out
-TRESHOLD=6000
+TRESHOLD=4000
 
 free_space_mb()
 {
@@ -28,11 +28,12 @@ else
 fi
 
 cd $DIR
-rm $OUTDIR/lidar.log
-rm $OUTDIR/rt2019_*jpg
-rm $OUTDIR/rt2019_*png
-rm $OUTDIR/rt2019_*kml
-rm $OUTDIR/istro_rt2019.log
+rm $OUTDIR/lidar.json
+rm $OUTDIR/camera_depth.json
+rm $OUTDIR/rt2020_*jpg
+rm $OUTDIR/rt2020_*png
+rm $OUTDIR/rt2020_*kml
+rm $OUTDIR/istro_rt2020.log
 rm $OUTDIR/dmesg*log
 
 sudo killall gpspipe
@@ -42,7 +43,14 @@ gpspipe -r -o $OUTDIR/gpspipe.log &
 
 python $DIR/script/serial_scan.py
 CMD=$CMD`python $DIR/script/serial_cmd.py`
-CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path E1F5M3W3V4V1M2E8E2E1 -vf 14 -vf2 14 -vf3 14 -vb -17 -cg 300 -ca 0"
+CMD=$CMD" -nowait -i DIstrobotics -path E5M1M3W1V1M2E9F3E3E5M1M3W1V1M2E9F3E3E1 -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -path E3F3E9M2V1W1M3M1E5E3F3E9M2V1W1M3M1E5E1 -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -path S5M3W4W8M2E8E1 -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path V1M8M2E4E2 -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path *1*2*3 -vf 12 -vf2 12 -vf3 12 -vb -17 -cg 300 -ca 0"
+#CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path *1*2*3 -vf 14 -vf2 14 -vf3 14 -vb -17"
+#CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path E1F5M3W3V4V1M2E8E2E1 -vf 14 -vf2 14 -vf3 14 -vb -17 -cg 300 -ca 0"
 #CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path F3W1V1E8E2F3W1V1E8E2 -vf 14 -vf2 14 -vf3 14 -vb -17"
 #CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path E2e3F9 -vf 14 -vf2 14 -vf3 14 -vb -17 -cg 156 -ca 219"
 #CMD=$CMD" -nowait -i DIstrobotics -lidar /dev/null -path W5F1E2E1 -vf 14 -vf2 14 -vf3 14 -vb -17 -cg 202 -ca 282"

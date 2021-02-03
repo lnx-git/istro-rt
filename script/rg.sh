@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BIN=istro_rt2019
-DIR=/home/istrobotics/projects/istro_rt2019
+BIN=istro_rt2020
+DIR=/home/istrobotics/projects/istro_rt2020
 CMD=$DIR/$BIN
 OUTDIR=$DIR/out
 TRESHOLD=6000
@@ -28,11 +28,12 @@ else
 fi
 
 cd $DIR
-rm $OUTDIR/lidar.log
-rm $OUTDIR/rt2019_*jpg
-rm $OUTDIR/rt2019_*png
-rm $OUTDIR/rt2019_*kml
-rm $OUTDIR/istro_rt2019.log
+rm $OUTDIR/lidar.json
+rm $OUTDIR/camera_depth.json
+rm $OUTDIR/rt2020_*jpg
+rm $OUTDIR/rt2020_*png
+rm $OUTDIR/rt2020_*kml
+rm $OUTDIR/istro_rt2020.log
 
 sudo killall gpspipe
 rm $OUTDIR/gpspipe.log

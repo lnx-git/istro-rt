@@ -38,7 +38,7 @@ while 1:
     #temp = raw_input('Type what you want to send, hit enter:\n\r')
     #ser.write(temp) #write to the serial port
     bytes = ser.readline() #reads in bytes followed by a newline 
-    dhtlog = open('/home/istrobotics/projects/istro_rt2019/out/serial_logger.log', 'a')
+    dhtlog = open('/home/istrobotics/projects/istro_rt2020/out/serial_logger.log', 'a')
     dhtlog.write(bytes)
     dhtlog.close()
     #break #jump out of loop 
