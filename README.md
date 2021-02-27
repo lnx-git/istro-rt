@@ -10,7 +10,7 @@ The robot:
 * the robot is programmed in C++ using the TensorFlow and OpenCV libraries
 
 
-![alt text](https://github.com/lnx-git/istro-rt/blob/master/ppt/istro_robot?raw=true)
+![alt text](https://github.com/lnx-git/istro-rt/blob/master/ppt/istro_robot.jpg?raw=true)
 ![alt text](https://github.com/lnx-git/istro-rt/blob/master/ppt/vision.png?raw=true)
 
 
