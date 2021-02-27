@@ -8,12 +8,12 @@ The robot:
 * the robot control and basic sensors are processed by Arduino Mega
 * the main control unit is NVIDIA Jetson Nano processing the neural network image management, lidar processing, localization and navigation
 * the robot is programmed in C++ using the TensorFlow and OpenCV libraries
-
+  
   
 ![alt text](https://github.com/lnx-git/istro-rt/blob/master/ppt/istro_robot.jpg?raw=true)
 ![alt text](https://github.com/lnx-git/istro-rt/blob/master/ppt/vision.png?raw=true)
   
-
+  
 Robot video:
 https://youtu.be/W_Xl9v7TNYU
 
