@@ -27,3 +27,7 @@ https://github.com/Adman/road-segmentation/tree/master/data/datasets
 
 Smely zajko team repository:\
 https://github.com/Robotics-DAI-FMFI-UK/smely-zajko-ros
+
+Software used for image labeling:
+* PixelAnnotationTool
+* https://github.com/abreheret/PixelAnnotationTool/
